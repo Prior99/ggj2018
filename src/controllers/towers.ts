@@ -10,11 +10,11 @@ export class Towers extends EventEmitter {
     public changed = true;
 
     public init() {
-        this.towers.push(new Tower(new Victor(400, 50), 0, 4, 2, true));
-        this.towers.push(new Tower(new Victor(600, 180), 1, 4, 2, false));
-        this.towers.push(new Tower(new Victor(500, 400), 2, 4, 2, false));
-        this.towers.push(new Tower(new Victor(300, 400), 3, 4, 2, false));
-        this.towers.push(new Tower(new Victor(200, 180), 4, 4, 2, false));
+        this.towers.push(new Tower(new Victor(400, 50), 0, 8, 2, true));
+        this.towers.push(new Tower(new Victor(600, 180), 2, 8, 2, false));
+        this.towers.push(new Tower(new Victor(500, 400), 4, 8, 2, false));
+        this.towers.push(new Tower(new Victor(300, 400), 6, 8, 2, false));
+        this.towers.push(new Tower(new Victor(200, 180), 8, 8, 2, false));
     }
 
     public update(dt: number) {

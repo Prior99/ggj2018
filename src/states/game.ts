@@ -8,7 +8,7 @@ export class Game extends State {
     @inject private towers: Towers;
 
     public create() {
-        this.stage.backgroundColor = "#FFFFFF";
+        this.stage.backgroundColor = "#222222";
         this.pidgeons.init();
         this.towers.init();
     }

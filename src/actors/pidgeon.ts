@@ -5,7 +5,13 @@ import { GGJ2018 } from "..";
 import { Towers } from "../controllers";
 
 const fps = 10;
-const speed = 50;
+const speed = 1;
+
+function normalizeDeg(deg: number) {
+    while (deg < 0 ) { deg += 360; }
+    while (deg > 360 ) { deg -= 360; }
+    return deg;
+}
 
 @external
 export class Pidgeon {
@@ -13,9 +19,10 @@ export class Pidgeon {
     @inject("Towers") private towers: Towers;
 
     public pos: Victor;
+    public angle = Math.random() * 360;
+    private turnSpeed = Math.random() * 5;
     private sprite: Sprite;
     private flap: Animation;
-    public target: Victor;
 
     constructor(pos: Victor) {
         this.pos = pos;
@@ -29,22 +36,30 @@ export class Pidgeon {
     }
 
     public update(dt: number) {
-        this.decideForTarget();
-        if (this.target) {
-            const delta = this.target.clone().subtract(this.pos).normalize().multiplyScalar(speed * dt);
+        const { target } = this;
+        if (target) {
+            const targetAngle = normalizeDeg(target.clone().subtract(this.pos).angleDeg());
+            const diff = Math.abs(this.angle - targetAngle);
+            if (diff > 0.01) {
+                const sign = this.angle > targetAngle ? -1 : 1;
+                if (diff < this.turnSpeed) { this.angle = targetAngle; }
+                else { this.angle += sign * this.turnSpeed; }
+                this.angle = normalizeDeg(this.angle);
+            }
+            const delta = new Victor(1, 0).rotateDeg(this.angle).normalize().multiplyScalar(speed);
             this.pos.add(delta);
-            this.sprite.angle = this.target.clone().subtract(this.pos).angleDeg();
+            this.sprite.angle = this.angle;
         }
         this.sprite.x = this.pos.x;
         this.sprite.y = this.pos.y;
     }
 
-    private decideForTarget() {
-        const { changed, allActive } = this.towers;
-        if (!changed || allActive.length === 0) {
+    public get target() {
+        const { allActive } = this.towers;
+        if (allActive.length === 0) {
             return;
         }
-        this.target = allActive.reduce((result, current) => {
+        return allActive.reduce((result, current) => {
             const distanceCurrent = this.pos.clone().distance(current.pos);
             const distanceOld = this.pos.clone().distance(result.pos);
             if (distanceCurrent > distanceOld) {
