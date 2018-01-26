@@ -1,0 +1,18 @@
+stages:
+  - test
+
+build:
+  image: "node:8"
+  script:
+    - make release
+  stage: test
+  artifacts:
+    paths:
+      - dist/
+      - index.html
+
+lint:
+  image: "node:8"
+  script:
+    - make lint
+  stage: test
