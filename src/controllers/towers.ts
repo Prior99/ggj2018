@@ -11,11 +11,11 @@ export class Towers extends EventEmitter {
 
     @initialize
     public init() {
-        this.towers.push(new SimpleTower(new Victor(400, 50)));
-        this.towers.push(new SimpleTower(new Victor(600, 180)));
-        this.towers.push(new SimpleTower(new Victor(500, 400)));
-        this.towers.push(new SimpleTower(new Victor(300, 400)));
-        this.towers.push(new SimpleTower(new Victor(200, 180)));
+        this.towers.push(new SimpleTower(new Victor(0, -200)));
+        this.towers.push(new SimpleTower(new Victor(-200, -50)));
+        this.towers.push(new SimpleTower(new Victor(200, -50)));
+        this.towers.push(new SimpleTower(new Victor(-100, 100)));
+        this.towers.push(new SimpleTower(new Victor(100, 100)));
 
         this.towers[1].connect(this.towers[0]);
         this.towers[2].connect(this.towers[1]);

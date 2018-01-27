@@ -14,6 +14,11 @@ export class World {
 
     @initialize
     private init() {
+        for (let x = -10; x < 10; ++x) {
+            for (let y = -10; y < 10; ++y) {
+                this.at(new Victor(x, y));
+            }
+        }
         return;
     }
 

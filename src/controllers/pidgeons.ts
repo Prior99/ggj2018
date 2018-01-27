@@ -9,8 +9,8 @@ export class Pidgeons {
     @initialize
     public init() {
         for (let i = 0; i < 50; ++i) {
-            const x = Math.random() * 800;
-            const y = Math.random() * 600;
+            const x = Math.random() * 600 - 300;
+            const y = Math.random() * 600 - 300;
             this.pidgeons.push(new Bird(new Victor(x, y)));
         }
     }
