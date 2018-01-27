@@ -1,12 +1,15 @@
-import { external, initialize } from "tsdi";
+import { external, initialize, inject } from "tsdi";
 import Victor = require("victor");
 import { Sprite, Animation } from "phaser-ce";
 
 import { Tower } from "../tower";
 import { Bird } from "../bird";
+import { Layers } from "../../layers";
 
 @external
 export class SimpleTower extends Tower {
+    @inject private layers: Layers;
+
     private animations: {
         active: Animation;
     };
@@ -20,6 +23,8 @@ export class SimpleTower extends Tower {
         this.sprite = this.game.add.sprite(this.pos.x, this.pos.y, "tower");
         this.sprite.anchor.x = 0.5;
         this.sprite.anchor.y = 0.5;
+
+        this.layers.ground.add(this.sprite);
 
         this.animations = {
             active: this.sprite.animations.add(

@@ -2,6 +2,7 @@ import { external, inject, initialize } from "tsdi";
 import { Game, Line, Sprite } from "phaser-ce";
 import Victor = require("victor");
 import { REST_STAMINA_PER_SECOND } from "../const";
+import { Layers } from "../layers";
 import { Bird } from "./bird";
 
 export abstract class Tower {
