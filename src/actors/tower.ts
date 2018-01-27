@@ -11,8 +11,7 @@ export abstract class Tower {
     protected pos: Victor;
 
     protected sprite: Sprite;
-    protected capacity: number;
-    public birds: Bird[] = [undefined, undefined, undefined, undefined];
+    public birds: Bird[];
 
     protected connections: Tower[] = [];
     private lines: Line[] = [];
@@ -20,7 +19,7 @@ export abstract class Tower {
     constructor(pos: Victor, capacity = 4) {
         this.pos = pos;
 
-        this.capacity = capacity;
+        this.birds = Array(capacity).fill(undefined);
     }
 
     @initialize
