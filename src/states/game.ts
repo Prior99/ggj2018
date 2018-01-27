@@ -1,6 +1,7 @@
 import { State, Animation, Keyboard } from "phaser-ce";
 import { external, inject } from "tsdi";
-import { Pidgeons, Towers } from "../controllers";
+import { Towers } from "../controllers/towers";
+import { Pidgeons } from "../controllers/pidgeons";
 
 @external
 export class Game extends State {

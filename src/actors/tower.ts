@@ -1,11 +1,10 @@
 import { external, inject, initialize } from "tsdi";
-import { Sprite, Animation } from "phaser-ce";
+import { Sprite, Animation, Game } from "phaser-ce";
 import Victor = require("victor");
-import { GGJ2018 } from "..";
 
 @external
 export class Tower {
-    @inject("GGJ2018") private game: GGJ2018;
+    @inject private game: Game;
 
     public pos: Victor;
     private sprite: Sprite;

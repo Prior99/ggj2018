@@ -1,8 +1,7 @@
-import { Game } from "../states";
 import { component, inject } from "tsdi";
 import { EventEmitter } from "events";
 import Victor = require("victor");
-import { Tower } from "../actors";
+import { Tower } from "../actors/tower";
 
 @component({ name: "Towers", eager: true })
 export class Towers extends EventEmitter {

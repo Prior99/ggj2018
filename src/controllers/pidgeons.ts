@@ -1,7 +1,6 @@
 import { component } from "tsdi";
 import Victor = require("victor");
-import { Pidgeon } from "../actors";
-import { GGJ2018 } from "../index";
+import { Pidgeon } from "../actors/pidgeon";
 
 @component
 export class Pidgeons {

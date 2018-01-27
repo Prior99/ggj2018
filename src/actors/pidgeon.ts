@@ -1,8 +1,7 @@
 import { external, inject, initialize } from "tsdi";
-import { Sprite, Animation } from "phaser-ce";
+import { Sprite, Animation, Game } from "phaser-ce";
 import Victor = require("victor");
-import { GGJ2018 } from "..";
-import { Towers } from "../controllers";
+import { Towers } from "../controllers/towers";
 
 const fps = 10;
 const speed = 1;
@@ -15,8 +14,8 @@ function normalizeDeg(deg: number) {
 
 @external
 export class Pidgeon {
-    @inject("GGJ2018") private game: GGJ2018;
-    @inject("Towers") private towers: Towers;
+    @inject private game: Game;
+    @inject private towers: Towers;
 
     public pos: Victor;
     public angle = Math.random() * 360;
