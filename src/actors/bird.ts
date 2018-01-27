@@ -85,8 +85,10 @@ export class Bird {
 
         if (this.current) {
             this.animations.current.flap.play(fps, true);
+            this.sprite.tint = Phaser.Color.RED;
         } else {
             this.animations.default.flap.play(fps, true);
+            this.sprite.tint = Phaser.Color.WHITE;
         }
     }
 
