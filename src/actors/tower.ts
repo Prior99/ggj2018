@@ -118,9 +118,14 @@ export abstract class Tower {
             if (bird.isRested) {
                 bird.target = this.getTarget(bird);
                 bird.startFlapping();
+                this.sendBirdAway(bird);
             }
         });
         this.birds = this.birds.map((bird) => bird && bird.target ? undefined : bird);
+    }
+
+    protected sendBirdAway(bird: Bird) {
+        return;
     }
 
     public render() {
