@@ -16,7 +16,7 @@ export class Tile {
     constructor(pos: Victor) {
         this.gridPos = pos;
         this.rnd = gen(`${pos.x},${pos.y}`);
-        this.hasWeed = this.rnd.random() > WEED_CHANCE;
+        this.hasWeed = this.rnd.random() < WEED_CHANCE;
     }
 
     @initialize
