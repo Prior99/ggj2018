@@ -1,6 +1,7 @@
 import { component, initialize } from "tsdi";
 import Victor = require("victor");
 import { Bird } from "../actors/bird";
+import { Carrier } from "../actors/birds/carrier";
 import { Controller } from "../controller";
 
 @component
@@ -12,7 +13,7 @@ export class Pidgeons implements Controller {
         for (let i = 0; i < 50; ++i) {
             const x = Math.random() * 600 - 300;
             const y = Math.random() * 600 - 300;
-            this.pidgeons.push(new Bird(new Victor(x, y)));
+            this.pidgeons.push(new Carrier(new Victor(x, y)));
         }
 
         this.pidgeons[0].follow = true;

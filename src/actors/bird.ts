@@ -17,9 +17,8 @@ function normalizeDeg(deg: number) {
     return deg;
 }
 
-@external
 export class Bird {
-    @inject private game: Game;
+    @inject protected game: Game;
     @inject private layers: Layers;
     @inject private towers: Towers;
 
@@ -39,8 +38,8 @@ export class Bird {
     private current = false;
 
     // Graphics stuff.
-    private sprite: Sprite;
-    private animations: {
+    protected sprite: Sprite;
+    protected animations: {
         flap: Animation;
         idle: Animation;
         head1: Animation;
@@ -56,35 +55,16 @@ export class Bird {
     }
 
     @initialize
-    private init() {
+    protected init() {
         this.target = undefined;
         this.badTargets = [];
 
-        this.sprite = this.game.add.sprite(this.pos.x, this.pos.y, "seagull");
         this.sprite.anchor.x = 0.5;
         this.sprite.anchor.y = 0.5;
         this.sprite.inputEnabled = true;
         this.sprite.events.onInputOver.add(() => console.log(this));
 
         this.layers.sky.add(this.sprite);
-
-        this.animations = {
-            flap: this.sprite.animations.add(
-                "flap", Animation.generateFrameNames("seagull ", 0, 5, ".ase", 1),
-            ),
-            idle: this.sprite.animations.add(
-                "idleDefault", Animation.generateFrameNames("seagull ", 8, 8, ".ase", 1),
-            ),
-            head1: this.sprite.animations.add(
-                "idleHead1", Animation.generateFrameNames("seagull ", 9, 9, ".ase", 1),
-            ),
-            head2: this.sprite.animations.add(
-                "idleHead2", Animation.generateFrameNames("seagull ", 10, 10, ".ase", 1),
-            ),
-            wing: this.sprite.animations.add(
-                "idleWing", Animation.generateFrameNames("seagull ", 11, 11, ".ase", 1),
-            ),
-        };
 
         this.startFlapping();
         this.follow = this.current;
@@ -204,37 +184,11 @@ export class Bird {
             this.velocity.multiplyScalar(Math.min(speed, currentSpeed) / currentSpeed);
             this.sprite.angle = this.velocity.angleDeg() + 90;
 
-            // TODO fix the following code.
-            // const targetAngle = normalizeDeg(target.clone().subtract(this.pos).angleDeg());
-            // const diff = Math.abs(this.angle - targetAngle);
-            // if (diff > 0.01) {
-            //     const sign = this.angle > targetAngle ? -1 : 1;
-            //     if (diff < this.turnSpeed) { this.angle = targetAngle; }
-            //     else { this.angle += sign * this.turnSpeed; }
-            //     this.angle = normalizeDeg(this.angle);
-            // }
-            // const delta = new Victor(1, 0).rotateDeg(this.angle).normalize().multiplyScalar(speed);
             this.pos.add(this.velocity.clone().multiplyScalar(dt));
-            // this.sprite.angle = this.angle;
         }
 
         // Graphics.
         this.sprite.x = this.pos.x;
         this.sprite.y = this.pos.y;
     }
-
-    // public get target() {
-    //     const { allActive } = this.towers;
-    //     if (allActive.length === 0) {
-    //         return;
-    //     }
-    //     return allActive.reduce((result, current) => {
-    //         const distanceCurrent = this.pos.clone().distance(current.pos);
-    //         const distanceOld = this.pos.clone().distance(result.pos);
-    //         if (distanceCurrent > distanceOld) {
-    //             return current;
-    //         }
-    //         return result;
-    //     }).pos;
-    // }
 }
