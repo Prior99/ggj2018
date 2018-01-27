@@ -6,6 +6,7 @@ export class StateBoot extends State {
     public preload() {
         this.game.load.atlas("pidgeon", "assets/pidgeon.png", "assets/pidgeon.json");
         this.game.load.atlas("seagull", "assets/seagull.png", "assets/seagull.json");
+        this.game.load.atlas("crow", "assets/crow.png", "assets/crow.json");
 
         this.game.load.atlas("tower", "assets/tower.png", "assets/tower.json");
         this.game.load.atlas("house", "assets/house.png", "assets/house.json");
