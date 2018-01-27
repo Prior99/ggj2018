@@ -4,3 +4,5 @@
 !*.css
 !assets
 !assets/*
+!sounds
+!sounds/*
