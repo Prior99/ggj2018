@@ -1,7 +1,7 @@
 import { external, inject, initialize } from "tsdi";
 import { Sprite, Animation, Game } from "phaser-ce";
 import Victor = require("victor");
-import { STAMINA_PER_SECOND } from "../const";
+import { REST_STAMINA_PER_SECOND } from "../const";
 import { Bird } from "./bird";
 
 export abstract class Tower {
@@ -90,14 +90,13 @@ export abstract class Tower {
 
     public update(dt: number) {
         this.birds.forEach((bird, index) => {
-            bird.stamina += STAMINA_PER_SECOND;
+            bird.stamina += dt * REST_STAMINA_PER_SECOND;
 
             if (bird.isRested()) {
                 bird.target = this.getTarget(bird);
-                this.birds.splice(index, 1);
             }
         });
-        this.birds = this.birds.filter((bird) => bird.target);
+        this.birds = this.birds.filter((bird) => !bird.target);
 
         this.setAnimation();
         return false;

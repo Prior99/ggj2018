@@ -2,7 +2,7 @@ import { external, inject, initialize } from "tsdi";
 import { Sprite, Animation, Game } from "phaser-ce";
 import Victor = require("victor");
 
-import { MAX_STAMINA } from "../const";
+import { MAX_STAMINA, FLY_STAMINA_PER_SECOND } from "../const";
 import { Towers } from "../controllers/towers";
 import { Tower } from "./tower";
 
@@ -58,6 +58,9 @@ export class Bird {
         this.badTargets = [];
 
         this.sprite = this.game.add.sprite(this.pos.x, this.pos.y, "pidgeon");
+        this.sprite.anchor.x = 0.5;
+        this.sprite.anchor.y = 0.5;
+
         this.animations = {
             default: {
                 flap: this.sprite.animations.add(
@@ -132,13 +135,15 @@ export class Bird {
 
     public update(dt: number) {
         const { towers, badTargets, pos } = this;
-
         // Behavior.
-        if (!Boolean(this.target)) {
+        if (!this.target) {
             // Do nothing, since no target, aka. sitting on tower.
         } else {
             // Bird is in midair and flying somewhere.
+            this.stamina -= dt * FLY_STAMINA_PER_SECOND;
+
             if (this.target.position.subtract(pos).length() < 1) {
+                // Bird reached its target. Initiate landing...
                 if (this.target.land(this)) {
                     // Drop list list of bad towers and the target also.
                     this.badTargets = [];
