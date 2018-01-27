@@ -73,7 +73,6 @@ export class Bird {
                 ),
             },
         };
-        this.animations.default.flap.reversed = true;
 
         this.follow = this.current;
 
@@ -88,6 +87,7 @@ export class Bird {
             this.sprite.tint = Phaser.Color.RED;
         } else {
             this.animations.default.flap.play(fps, true);
+            this.animations.default.flap.setFrame(Math.floor(Math.random() * 7), true);
             this.sprite.tint = Phaser.Color.WHITE;
         }
     }
