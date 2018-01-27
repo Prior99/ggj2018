@@ -8,12 +8,13 @@ import { GhostTower } from "../actors/ghost-tower";
 import { SimpleTower } from "../actors/towers/simple-tower";
 import { Controller } from "../controller";
 
-@component
+@component("Towers")
 export class Towers implements Controller {
     @inject private game: Game;
 
     private towers: Tower[] = [];
     private ghost: GhostTower;
+    private selected: Tower;
 
     private changed: boolean;
 
@@ -25,11 +26,11 @@ export class Towers implements Controller {
         this.addTower(new SimpleTower(new Victor(-100, 100)));
         this.addTower(new SimpleTower(new Victor(100, 100)));
 
-        this.towers[1].connect(this.towers[0]);
-        this.towers[2].connect(this.towers[1]);
-        this.towers[3].connect(this.towers[2]);
-        this.towers[4].connect(this.towers[3]);
-        this.towers[0].connect(this.towers[4]);
+        this.towers[1].addTarget(this.towers[0]);
+        this.towers[2].addTarget(this.towers[1]);
+        this.towers[3].addTarget(this.towers[2]);
+        this.towers[4].addTarget(this.towers[3]);
+        this.towers[0].addTarget(this.towers[4]);
     }
 
     public addTower(tower: Tower) {
@@ -69,6 +70,22 @@ export class Towers implements Controller {
                 this.ghost = undefined;
             },
         );
+    }
+
+    public select(tower: Tower) {
+        if (this.selected) {
+            this.selected.selected = false;
+        }
+
+        tower.selected = true;
+        this.selected = tower;
+    }
+
+    public deselect() {
+        if (this.selected) {
+            this.selected.selected = false;
+            this.selected = undefined;
+        }
     }
 
     public get allActive() { return this.towers; }
