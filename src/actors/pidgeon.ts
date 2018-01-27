@@ -23,6 +23,8 @@ export class Pidgeon {
     private sprite: Sprite;
     private flap: Animation;
 
+    public stamina = 0;
+
     constructor(pos: Victor) {
         this.pos = pos;
     }

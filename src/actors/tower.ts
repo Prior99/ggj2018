@@ -1,6 +1,8 @@
 import { external, inject, initialize } from "tsdi";
 import { Sprite, Animation, Game } from "phaser-ce";
 import Victor = require("victor");
+import { STAMINA_PER_SECOND } from "../const";
+import { Pidgeon as Bird } from "./pidgeon";
 
 @external
 export class Tower {
@@ -12,18 +14,14 @@ export class Tower {
         active: Animation;
         inactive: Animation;
     };
-    public target: Victor;
-    private time = 0;
-    public active: boolean;
-    private activeTime: number;
-    private inactiveTime: number;
 
-    constructor(pos: Victor, offset = 0, inactiveTime = 1, activeTime = 1, active = true) {
+    private capacity: number;
+    private birds: Bird[] = [];
+
+    constructor(pos: Victor, capacity = 4) {
         this.pos = pos;
-        this.time = offset;
-        this.active = active;
-        this.activeTime = activeTime;
-        this.inactiveTime = inactiveTime;
+
+        this.capacity = capacity;
     }
 
     @initialize
@@ -40,23 +38,35 @@ export class Tower {
         this.setAnimation();
     }
 
-    public update(dt: number) {
-        this.time += dt;
-        if (this.time <= this.inactiveTime) { this.active = false; }
-        else { this.active = true; }
-        this.setAnimation();
-        if (this.time > this.inactiveTime + this.activeTime) {
-            this.time = 0;
-            return true;
+    private isFull(): boolean {
+        return this.birds.length === this.capacity;
+    }
+
+    public get position(): Victor {
+        return this.pos.clone();
+    }
+
+    public land(bird: Bird): boolean {
+        if (this.isFull()) {
+            return false;
         }
+
+        this.birds.push(bird);
+        this.setAnimation();
+
+        return true;
+    }
+
+    public update(dt: number) {
+        this.birds.forEach((bird) => bird.stamina += STAMINA_PER_SECOND);
         return false;
     }
 
     private setAnimation() {
-        if (this.active) {
+        if (this.isFull()) {
             this.animations.active.play(1, true);
         } else {
-            this.animations.inactive.play(1, true);
+            this.animations.active.play(1, true);
         }
     }
 }
