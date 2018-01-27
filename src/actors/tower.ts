@@ -1,18 +1,15 @@
 import { external, inject, initialize } from "tsdi";
-import { Sprite, Animation, Game, Line } from "phaser-ce";
+import { Game, Line, Sprite } from "phaser-ce";
 import Victor = require("victor");
 import { REST_STAMINA_PER_SECOND } from "../const";
 import { Bird } from "./bird";
 
 export abstract class Tower {
-    @inject private game: Game;
+    @inject protected game: Game;
 
-    private pos: Victor;
-    private sprite: Sprite;
-    private animations: {
-        active: Animation;
-    };
+    protected pos: Victor;
 
+    protected sprite: Sprite;
     protected capacity: number;
     public perch: Bird[];
     public birds: Bird[] = [];
@@ -29,16 +26,7 @@ export abstract class Tower {
 
     @initialize
     private init() {
-        this.sprite = this.game.add.sprite(this.pos.x, this.pos.y, "tower");
-        this.sprite.anchor.x = 0.5;
-        this.sprite.anchor.y = 0.5;
-
-        this.animations = {
-            active: this.sprite.animations.add(
-                "active", Animation.generateFrameNames("tower ", 0, 1, ".ase", 1),
-            ),
-        };
-        this.animations.active.play(1, true);
+        return;
     }
 
     protected abstract getTarget(bird: Bird): Tower;
@@ -110,8 +98,6 @@ export abstract class Tower {
             }
         });
         this.birds = this.birds.filter((bird) => !bird.target);
-
-        return false;
     }
     public render() {
         // this.lines.forEach(line => this.game.debug.geom(line, "rgba(255, 255, 255, 0.3)"));
