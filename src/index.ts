@@ -12,7 +12,7 @@ export class GGJ2018 extends Phaser.Game {
         this.state.add("main-menu", States.StateMainMenu);
         this.state.add("game", States.StateGame);
         this.state.start("boot");
-        this.antialias = false
+        this.antialias = false;
     }
 }
 

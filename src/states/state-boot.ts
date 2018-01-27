@@ -19,5 +19,7 @@ export class StateBoot extends State {
         const music = this.game.add.audio("song");
         music.loop = true;
         music.play();
+        document.querySelector("canvas").onselectstart = () => false;
+        document.querySelector("canvas").oncontextmenu = () => false;
     }
 }
