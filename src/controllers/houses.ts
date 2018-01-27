@@ -1,19 +1,33 @@
-import { component, initialize } from "tsdi";
+import { component, initialize, Inject } from "tsdi";
 import Victor = require("victor");
 import { House } from "../actors/house";
 import { Controller } from "../controller";
+import { Towers } from "./towers";
 
-@component
+@component("Houses")
 export class Houses implements Controller {
+    @Inject private towers: Towers;
+
     private houses: House[] = [];
 
     @initialize
     public init() {
-        this.houses.push(new House(new Victor(-150, 0)));
-        this.houses.push(new House(new Victor(150, 0)));
+        this.addHouse(new House(new Victor(-150, 0)));
+        this.addHouse(new House(new Victor(150, 0)));
+    }
+
+    private addHouse(house: House) {
+        this.houses.push(house);
+        this.towers.addTower(house);
     }
 
     public update(dt: number) {
         this.houses.forEach(house => house.update(dt));
+    }
+
+    public randomExcept(except: House) {
+        const houses = this.houses.filter(house => house !== except);
+        const index = Math.floor(houses.length * Math.random());
+        return houses[index];
     }
 }

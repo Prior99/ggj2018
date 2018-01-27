@@ -4,17 +4,16 @@ import Victor = require("victor");
 import { Towers } from "../controllers/towers";
 import { Pidgeons } from "../controllers/pidgeons";
 import { Houses } from "../controllers/houses";
+import { Packages } from "../controllers/packages";
 import { World } from "../world";
-import { CAMERA_SPEED } from "../const";
+import { CAMERA_SPEED, ZOOM } from "../const";
 import { Controller } from "../controller";
+import { UI } from "../ui/game-ui";
 
 @external
 export class StateGame extends State {
     @inject private tsdi: TSDI;
 
-    private pidgeons: Pidgeons;
-    private towers: Towers;
-    private gameWorld: World;
     private dragPoint: Point;
     private cursor: CursorKeys;
     private controllers: Controller[] = [];
@@ -22,10 +21,12 @@ export class StateGame extends State {
     public create() {
         this.stage.backgroundColor = "#222222";
         this.tsdi.get(World);
+        this.tsdi.get(UI);
 
         this.controllers.push(this.tsdi.get(Houses));
         this.controllers.push(this.tsdi.get(Towers));
         this.controllers.push(this.tsdi.get(Pidgeons));
+        this.controllers.push(this.tsdi.get(Packages));
 
         this.cursor = this.game.input.keyboard.createCursorKeys();
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -33,7 +34,7 @@ export class StateGame extends State {
         this.game.camera.focusOnXY(0, 0);
 
         this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
-        this.scale.setUserScale(2, 2);
+        this.scale.setUserScale(ZOOM, ZOOM);
         this.game.renderer.renderSession.roundPixels = true;
         Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
     }
