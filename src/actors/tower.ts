@@ -15,7 +15,7 @@ export abstract class Tower {
     };
 
     protected capacity: number;
-    protected birds: Bird[] = [];
+    public birds: Bird[] = [];
 
     protected connections: Tower[] = [];
 
@@ -94,10 +94,9 @@ export abstract class Tower {
 
             if (bird.isRested()) {
                 bird.target = this.getTarget(bird);
-                this.birds.splice(index, 1);
             }
         });
-        this.birds = this.birds.filter((bird) => bird.target);
+        this.birds = this.birds.filter((bird) => !bird.target);
 
         this.setAnimation();
         return false;

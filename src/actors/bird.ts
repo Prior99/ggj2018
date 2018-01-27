@@ -124,6 +124,7 @@ export class Bird {
         );
         if (!Boolean(bestTower)) {
             this.badTargets = [];
+            // Use random
             this.target = towers.allActive[0];
         } else {
             this.target = bestTower;
@@ -131,14 +132,15 @@ export class Bird {
     }
 
     public update(dt: number) {
-        const { towers, badTargets, pos } = this;
+        const { towers, badTargets } = this;
 
         // Behavior.
         if (!Boolean(this.target)) {
             // Do nothing, since no target, aka. sitting on tower.
         } else {
             // Bird is in midair and flying somewhere.
-            if (this.target.position.subtract(pos).length() < 1) {
+            const target = this.target;
+            if (this.target.position.subtract(this.pos).length() < 5) {
                 if (this.target.land(this)) {
                     // Drop list list of bad towers and the target also.
                     this.badTargets = [];
@@ -149,11 +151,16 @@ export class Bird {
                     this.selectRandomTarget();
                 }
             }
+            if (target.birds.every(bird => bird !== this) && !Boolean(this.target)) {
+                alert("WTF");
+            }
         }
 
         // Movement.
         if (this.target) {
-            const diff = this.target.position.subtract(pos).normalize().multiplyScalar(dt * speed);
+            const remainingVector = this.target.position.subtract(this.pos);
+            const remainingDistance = remainingVector.length();
+            const diff = remainingVector.multiplyScalar(Math.min(dt * speed / remainingDistance, 1));
 
             // TODO fix the following code.
             // const targetAngle = normalizeDeg(target.clone().subtract(this.pos).angleDeg());
