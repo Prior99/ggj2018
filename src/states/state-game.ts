@@ -3,8 +3,10 @@ import { external, inject, TSDI } from "tsdi";
 import Victor = require("victor");
 import { Towers } from "../controllers/towers";
 import { Pidgeons } from "../controllers/pidgeons";
+import { Houses } from "../controllers/houses";
 import { World } from "../world";
 import { CAMERA_SPEED } from "../const";
+import { Controller } from "../controller";
 
 @external
 export class StateGame extends State {
@@ -15,21 +17,25 @@ export class StateGame extends State {
     private gameWorld: World;
     private dragPoint: Point;
     private cursor: CursorKeys;
+    private controllers: Controller[] = [];
 
     public create() {
         this.stage.backgroundColor = "#222222";
-        this.gameWorld = this.tsdi.get(World);
-        this.pidgeons = this.tsdi.get(Pidgeons);
-        this.towers = this.tsdi.get(Towers);
+        this.tsdi.get(World);
+
+        this.controllers.push(this.tsdi.get(Houses));
+        this.controllers.push(this.tsdi.get(Towers));
+        this.controllers.push(this.tsdi.get(Pidgeons));
+
         this.cursor = this.game.input.keyboard.createCursorKeys();
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.world.setBounds(-1000, -1000, 2000, 2000);
         this.game.camera.focusOnXY(0, 0);
 
-        // this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
-        // this.scale.setUserScale(2, 2);
-        // this.game.renderer.renderSession.roundPixels = true;
-        // Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
+        this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
+        this.scale.setUserScale(2, 2);
+        this.game.renderer.renderSession.roundPixels = true;
+        Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
     }
 
     public update() {
@@ -57,12 +63,12 @@ export class StateGame extends State {
             this.game.camera.x += CAMERA_SPEED;
         }
 
-        this.pidgeons.update(elapsed);
-        this.towers.update(elapsed);
+        this.controllers.forEach(controller => controller.update && controller.update(elapsed));
     }
 
     public render() {
         const { DEBUG_CAMERA } = window as any;
         if (DEBUG_CAMERA) { this.game.debug.cameraInfo(this.game.camera, 32, 32); }
+        this.controllers.forEach(controller => controller.render && controller.render());
     }
 }

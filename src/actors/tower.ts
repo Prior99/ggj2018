@@ -1,5 +1,5 @@
 import { external, inject, initialize } from "tsdi";
-import { Sprite, Animation, Game } from "phaser-ce";
+import { Sprite, Animation, Game, Line } from "phaser-ce";
 import Victor = require("victor");
 import { REST_STAMINA_PER_SECOND } from "../const";
 import { Bird } from "./bird";
@@ -11,7 +11,6 @@ export abstract class Tower {
     private sprite: Sprite;
     private animations: {
         active: Animation;
-        inactive: Animation;
     };
 
     protected capacity: number;
@@ -19,6 +18,7 @@ export abstract class Tower {
     public birds: Bird[] = [];
 
     protected connections: Tower[] = [];
+    private lines: Line[] = [];
 
     constructor(pos: Victor, capacity = 4) {
         this.pos = pos;
@@ -35,13 +35,10 @@ export abstract class Tower {
 
         this.animations = {
             active: this.sprite.animations.add(
-                "active", Animation.generateFrameNames("tower ", 0, 0, ".ase", 1),
-            ),
-            inactive: this.sprite.animations.add(
-                "inactive", Animation.generateFrameNames("tower ", 1, 1, ".ase", 1),
+                "active", Animation.generateFrameNames("tower ", 0, 1, ".ase", 1),
             ),
         };
-        this.setAnimation();
+        this.animations.active.play(1, true);
     }
 
     protected abstract getTarget(bird: Bird): Tower;
@@ -85,6 +82,9 @@ export abstract class Tower {
         if (this.canConnect(tower)) {
             this.connections.push(tower);
             this.postConnect(tower);
+            const line = new Line();
+            line.fromSprite(this.sprite, tower.sprite);
+            this.lines.push(line);
             return true;
         }
 
@@ -111,15 +111,9 @@ export abstract class Tower {
         });
         this.birds = this.birds.filter((bird) => !bird.target);
 
-        this.setAnimation();
         return false;
     }
-
-    private setAnimation() {
-        if (this.isFull()) {
-            this.animations.inactive.play(1, true);
-        } else {
-            this.animations.active.play(1, true);
-        }
+    public render() {
+        // this.lines.forEach(line => this.game.debug.geom(line, "rgba(255, 255, 255, 0.3)"));
     }
 }

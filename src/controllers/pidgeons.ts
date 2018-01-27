@@ -1,9 +1,10 @@
 import { component, initialize } from "tsdi";
 import Victor = require("victor");
 import { Bird } from "../actors/bird";
+import { Controller } from "../controller";
 
 @component
-export class Pidgeons {
+export class Pidgeons implements Controller {
     private pidgeons: Bird[] = [];
 
     @initialize

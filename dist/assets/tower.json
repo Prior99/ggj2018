@@ -1,33 +1,32 @@
 { "frames": {
    "tower 0.ase": {
-    "frame": { "x": 0, "y": 0, "w": 16, "h": 16 },
+    "frame": { "x": 0, "y": 0, "w": 36, "h": 36 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 16 },
-    "sourceSize": { "w": 16, "h": 16 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 36, "h": 36 },
+    "sourceSize": { "w": 36, "h": 36 },
     "duration": 100
    },
    "tower 1.ase": {
-    "frame": { "x": 16, "y": 0, "w": 16, "h": 16 },
+    "frame": { "x": 36, "y": 0, "w": 36, "h": 36 },
     "rotated": false,
     "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 16, "h": 16 },
-    "sourceSize": { "w": 16, "h": 16 },
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 36, "h": 36 },
+    "sourceSize": { "w": 36, "h": 36 },
     "duration": 100
    }
  },
  "meta": {
   "app": "http://www.aseprite.org/",
-  "version": "1.2-dev",
-  "image": "/home/prior/repositories/ggj2018/dist/assets/tower/tower.png",
+  "version": "1.3-dev",
+  "image": "/home/prior/repositories/ggj2018/ase/tower.png",
   "format": "I8",
-  "size": { "w": 32, "h": 16 },
+  "size": { "w": 72, "h": 36 },
   "scale": "1",
   "frameTags": [
   ],
   "layers": [
-   { "name": "Layer 1", "opacity": 255, "blendMode": "normal" },
-   { "name": "Layer 2", "opacity": 255, "blendMode": "normal" }
+   { "name": "Layer 1", "opacity": 255, "blendMode": "normal" }
   ],
   "slices": [
   ]
