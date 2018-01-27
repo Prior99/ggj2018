@@ -8,15 +8,17 @@ import * as States from "./states";
 export class GGJ2018 extends Phaser.Game {
     constructor(config: Phaser.IGameConfig) {
         super(config);
-        this.state.add("boot", States.Boot);
-        this.state.add("main-menu", States.MainMenu);
-        this.state.add("game", States.Game);
+        this.state.add("boot", States.StateBoot);
+        this.state.add("main-menu", States.StateMainMenu);
+        this.state.add("game", States.StateGame);
         this.state.start("boot");
     }
 }
 
 @component
 class GameFactory {
+    private game: GGJ2018;
+
     @factory({ name: "GGJ2018" })
     public createGame(): GGJ2018 {
         const gameConfig: Phaser.IGameConfig = {
@@ -26,7 +28,13 @@ class GameFactory {
             parent: "",
             resolution: 1,
         };
-        return new GGJ2018(gameConfig);
+        this.game = new GGJ2018(gameConfig);
+        return this.game;
+    }
+
+    @factory
+    public getGame(): Phaser.Game {
+        return this.game;
     }
 }
 

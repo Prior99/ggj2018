@@ -1,17 +1,17 @@
-import { component } from "tsdi";
+import { component, initialize } from "tsdi";
 import Victor = require("victor");
-import { Pidgeon } from "../actors";
-import { GGJ2018 } from "../index";
+import { Bird } from "../actors/bird";
 
 @component
 export class Pidgeons {
-    private pidgeons: Pidgeon[] = [];
+    private pidgeons: Bird[] = [];
 
+    @initialize
     public init() {
         for (let i = 0; i < 50; ++i) {
             const x = Math.random() * 800;
             const y = Math.random() * 600;
-            this.pidgeons.push(new Pidgeon(new Victor(x, y)));
+            this.pidgeons.push(new Bird(new Victor(x, y)));
         }
     }
 
