@@ -61,6 +61,8 @@ export class Bird {
         this.sprite = this.game.add.sprite(this.pos.x, this.pos.y, "seagull");
         this.sprite.anchor.x = 0.5;
         this.sprite.anchor.y = 0.5;
+        this.sprite.inputEnabled = true;
+        this.sprite.events.onInputOver.add(() => console.log(this));
 
         this.layers.sky.add(this.sprite);
 
