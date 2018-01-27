@@ -41,5 +41,5 @@ class GameFactory {
 window.onload = async () => {
     const tsdi = new TSDI();
     tsdi.enableComponentScanner();
-    tsdi.get(GGJ2018);
+    (window as any).game = tsdi.get(GGJ2018);
 };
