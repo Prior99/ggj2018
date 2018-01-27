@@ -37,6 +37,7 @@ export class StateGame extends State {
         this.scale.setUserScale(ZOOM, ZOOM);
         this.game.renderer.renderSession.roundPixels = true;
         Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
+        this.game.time.advancedTiming = true;
     }
 
     public update() {
@@ -71,5 +72,6 @@ export class StateGame extends State {
         const { DEBUG_CAMERA } = window as any;
         if (DEBUG_CAMERA) { this.game.debug.cameraInfo(this.game.camera, 32, 32); }
         this.controllers.forEach(controller => controller.render && controller.render());
+        this.game.debug.text(`FPS: ${this.game.time.fps}` || "FPS: --", 2, 15, "#FFFFFF");
     }
 }

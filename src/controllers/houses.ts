@@ -14,6 +14,8 @@ export class Houses implements Controller {
     public init() {
         this.addHouse(new House(new Victor(-150, 0)));
         this.addHouse(new House(new Victor(150, 0)));
+        this.houses[0].connect(this.houses[1]);
+        this.houses[1].connect(this.houses[0]);
     }
 
     private addHouse(house: House) {
