@@ -1,4 +1,4 @@
-export const REST_STAMINA_PER_SECOND = 5;
+export const REST_STAMINA_PER_SECOND = 2;
 export const FLY_STAMINA_PER_SECOND = 1;
 export const MAX_STAMINA = 15;
 

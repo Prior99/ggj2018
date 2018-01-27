@@ -14,7 +14,8 @@ export abstract class Tower {
     };
 
     protected capacity: number;
-    protected birds: Bird[] = [];
+    public perch: Bird[];
+    public birds: Bird[] = [];
 
     protected connections: Tower[] = [];
     private lines: Line[] = [];
@@ -23,6 +24,7 @@ export abstract class Tower {
         this.pos = pos;
 
         this.capacity = capacity;
+        this.perch = [undefined, undefined, undefined, undefined];
     }
 
     @initialize
@@ -46,6 +48,17 @@ export abstract class Tower {
     }
 
     public get position(): Victor {
+        return this.pos.clone();
+    }
+
+    public getSpotPosition(bird: Bird): Victor {
+        const xOffset = [20, -20, 60, -60];
+        this.perch.forEach((registered, index) => {
+            if (bird === registered) {
+                const offset = new Victor(xOffset[index], 0);
+                return this.pos.clone().add(offset);
+            }
+        })
         return this.pos.clone();
     }
 

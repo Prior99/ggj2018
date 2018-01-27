@@ -7,6 +7,7 @@ import { Towers } from "../controllers/towers";
 import { Tower } from "./tower";
 
 const fps = 10;
+const acceleration = 50;
 const speed = 50;
 
 function normalizeDeg(deg: number) {
@@ -21,19 +22,16 @@ export class Bird {
     @inject private towers: Towers;
 
     public pos: Victor;
-    public angle = Math.random() * 360;
-    private turnSpeed = Math.random() * 5;
+    private velocity: Victor;
+
     public currentStamina: number;
     public maxStamina: number = MAX_STAMINA;
 
-    // Managed by `Bird`.
-    public target: Tower;
+    // Managed by `Bird`. There is a setter for the target
+    private privateTarget: Tower;
     private badTargets: Tower[];
 
     private current = false;
-
-    // public angle = Math.random() * 360;
-    // private turnSpeed = Math.random() * 5;
 
     // Graphics stuff.
     private sprite: Sprite;
@@ -48,6 +46,7 @@ export class Bird {
 
     constructor(pos: Victor) {
         this.pos = pos;
+        this.velocity = new Victor(0, 0);
 
         this.currentStamina = this.maxStamina;
     }
@@ -108,6 +107,14 @@ export class Bird {
         return this.stamina >= this.maxStamina;
     }
 
+    public get target() {
+        return this.privateTarget;
+    }
+
+    public set target(newTarget: Tower) {
+        this.privateTarget = newTarget;
+    }
+
     private selectRandomTarget() {
         const { towers, badTargets, pos } = this;
         // Radius search nearest free tower which is not in the list.
@@ -130,6 +137,7 @@ export class Bird {
         );
         if (!Boolean(bestTower)) {
             this.badTargets = [];
+            // Use random
             this.target = towers.allActive[0];
         } else {
             this.target = bestTower;
@@ -137,7 +145,7 @@ export class Bird {
     }
 
     public update(dt: number) {
-        const { towers, badTargets, pos } = this;
+        const { towers, badTargets } = this;
         // Behavior.
         if (!this.target) {
             // Do nothing, since no target, aka. sitting on tower.
@@ -145,25 +153,34 @@ export class Bird {
             // Bird is in midair and flying somewhere.
             this.stamina -= dt * FLY_STAMINA_PER_SECOND;
 
-            if (this.target.position.subtract(pos).length() < 1) {
+            const target = this.target;
+            const targetPosition = target.position;
+            if (targetPosition.subtract(this.pos).length() < 15) {
                 // Bird reached its target. Initiate landing...
                 if (this.target.land(this)) {
                     // Drop list list of bad towers and the target also.
                     this.badTargets = [];
                     this.target = undefined;
+                    this.velocity = new Victor(0, 0);
                 } else {
                     // Push the tower to list of tested towers. (To not oscillate between towers)
                     this.badTargets.push(this.target);
                     this.selectRandomTarget();
                 }
             }
+            if (target.birds.every(bird => bird !== this) && !Boolean(this.target)) {
+                alert("WTF");
+            }
         }
 
         // Movement.
         if (this.target) {
-            const diff = this.target.position.subtract(pos).normalize().multiplyScalar(dt * speed);
-            const angle = diff.angleDeg();
-            this.sprite.angle = angle + 90;
+            const targetPosition = this.target.position;
+            const dir = targetPosition.subtract(this.pos).normalize();
+            this.velocity.add(dir.multiplyScalar(dt * acceleration));
+            const currentSpeed = this.velocity.length();
+            this.velocity.multiplyScalar(Math.min(speed, currentSpeed) / currentSpeed);
+            this.sprite.angle = this.velocity.angleDeg() + 90;
 
             // TODO fix the following code.
             // const targetAngle = normalizeDeg(target.clone().subtract(this.pos).angleDeg());
@@ -175,7 +192,7 @@ export class Bird {
             //     this.angle = normalizeDeg(this.angle);
             // }
             // const delta = new Victor(1, 0).rotateDeg(this.angle).normalize().multiplyScalar(speed);
-            this.pos.add(diff);
+            this.pos.add(this.velocity.clone().multiplyScalar(dt));
             // this.sprite.angle = this.angle;
         }
 
