@@ -58,7 +58,7 @@ export abstract class Tower {
                 const offset = new Victor(xOffset[index], 0);
                 return this.pos.clone().add(offset);
             }
-        })
+        });
         return this.pos.clone();
     }
 
