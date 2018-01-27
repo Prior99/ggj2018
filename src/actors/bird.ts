@@ -160,6 +160,8 @@ export class Bird {
         // Movement.
         if (this.target) {
             const diff = this.target.position.subtract(pos).normalize().multiplyScalar(dt * speed);
+            const angle = diff.angleDeg();
+            this.sprite.angle = angle + 90;
 
             // TODO fix the following code.
             // const targetAngle = normalizeDeg(target.clone().subtract(this.pos).angleDeg());
