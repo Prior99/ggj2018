@@ -19,17 +19,21 @@ export class Towers implements Controller {
 
     @initialize
     public init() {
-        this.towers.push(new SimpleTower(new Victor(0, -200)));
-        this.towers.push(new SimpleTower(new Victor(-200, -50)));
-        this.towers.push(new SimpleTower(new Victor(200, -50)));
-        this.towers.push(new SimpleTower(new Victor(-100, 100)));
-        this.towers.push(new SimpleTower(new Victor(100, 100)));
+        this.addTower(new SimpleTower(new Victor(0, -200)));
+        this.addTower(new SimpleTower(new Victor(-200, -50)));
+        this.addTower(new SimpleTower(new Victor(200, -50)));
+        this.addTower(new SimpleTower(new Victor(-100, 100)));
+        this.addTower(new SimpleTower(new Victor(100, 100)));
 
         this.towers[1].connect(this.towers[0]);
         this.towers[2].connect(this.towers[1]);
         this.towers[3].connect(this.towers[2]);
         this.towers[4].connect(this.towers[3]);
         this.towers[0].connect(this.towers[4]);
+    }
+
+    public addTower(tower: Tower) {
+        this.towers.push(tower);
     }
 
     public update(dt: number) {
