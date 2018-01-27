@@ -3,6 +3,7 @@ import { external, inject, TSDI } from "tsdi";
 import Victor = require("victor");
 import { Towers } from "../controllers/towers";
 import { Pidgeons } from "../controllers/pidgeons";
+import { Houses } from "../controllers/houses";
 import { World } from "../world";
 import { CAMERA_SPEED } from "../const";
 import { Controller } from "../controller";
@@ -22,8 +23,9 @@ export class StateGame extends State {
         this.stage.backgroundColor = "#222222";
         this.tsdi.get(World);
 
-        this.controllers.push(this.tsdi.get(Pidgeons));
+        this.controllers.push(this.tsdi.get(Houses));
         this.controllers.push(this.tsdi.get(Towers));
+        this.controllers.push(this.tsdi.get(Pidgeons));
 
         this.cursor = this.game.input.keyboard.createCursorKeys();
         this.game.physics.startSystem(Phaser.Physics.ARCADE);

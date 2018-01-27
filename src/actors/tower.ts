@@ -101,6 +101,6 @@ export abstract class Tower {
         return false;
     }
     public render() {
-        this.lines.forEach(line => this.game.debug.geom(line, "rgba(255, 255, 255, 0.3)"));
+        // this.lines.forEach(line => this.game.debug.geom(line, "rgba(255, 255, 255, 0.3)"));
     }
 }
