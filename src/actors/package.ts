@@ -1,6 +1,6 @@
 import { external, inject, initialize } from "tsdi";
 import { Sprite, Animation, Game } from "phaser-ce";
-import { House } from "./house";
+import { House } from "./towers/house";
 import { Layers } from "../layers";
 import Victor = require("victor");
 

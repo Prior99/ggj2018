@@ -1,6 +1,6 @@
 import { component, inject } from "tsdi";
 import Victor = require("victor");
-import { House } from "../actors/house";
+import { House } from "../actors/towers/house";
 import { Controller } from "../controller";
 import { Package } from "../actors/package";
 import { Houses } from "./houses";

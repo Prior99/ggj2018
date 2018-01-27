@@ -1,6 +1,6 @@
 import { component, initialize, Inject } from "tsdi";
 import Victor = require("victor");
-import { House } from "../actors/house";
+import { House } from "../actors/towers/house";
 import { Controller } from "../controller";
 import { Towers } from "./towers";
 
@@ -33,3 +33,4 @@ export class Houses implements Controller {
         return houses[index];
     }
 }
+
