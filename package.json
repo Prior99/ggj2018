@@ -16,10 +16,12 @@
   "private": false,
   "dependencies": {
     "@types/ramda": "^0.25.16",
+    "@types/random-seed": "^0.3.3",
     "@types/victor": "^1.1.0",
     "decko": "^1.2.0",
     "phaser-ce": "^2.10.0",
     "ramda": "^0.25.0",
+    "random-seed": "^0.3.0",
     "tsdi": "^0.18.2",
     "tsm": "^1.0.1",
     "victor": "^1.1.0"
