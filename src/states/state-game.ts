@@ -44,7 +44,7 @@ export class StateGame extends State {
 
     public update() {
         const elapsed = this.game.time.elapsed / 1000;
-        if (this.game.input.activePointer.isDown) {
+        if (this.game.input.activePointer.rightButton.isDown) {
             if (this.dragPoint) {
                 this.game.camera.x += this.dragPoint.x - this.game.input.activePointer.position.x;
                 this.game.camera.y += this.dragPoint.y - this.game.input.activePointer.position.y;
