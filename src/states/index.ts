@@ -1,3 +1,3 @@
-export * from "./boot";
-export * from "./game";
-export * from "./main-menu";
+export * from "./state-boot";
+export * from "./state-game";
+export * from "./state-main-menu";

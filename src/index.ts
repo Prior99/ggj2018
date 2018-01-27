@@ -8,9 +8,9 @@ import * as States from "./states";
 export class GGJ2018 extends Phaser.Game {
     constructor(config: Phaser.IGameConfig) {
         super(config);
-        this.state.add("boot", States.Boot);
-        this.state.add("main-menu", States.MainMenu);
-        this.state.add("game", States.Game);
+        this.state.add("boot", States.StateBoot);
+        this.state.add("main-menu", States.StateMainMenu);
+        this.state.add("game", States.StateGame);
         this.state.start("boot");
     }
 }

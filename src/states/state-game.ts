@@ -5,7 +5,7 @@ import { Pidgeons } from "../controllers/pidgeons";
 import { World } from "../world";
 
 @external
-export class Game extends State {
+export class StateGame extends State {
     @inject private tsdi: TSDI;
 
     private pidgeons: Pidgeons;
