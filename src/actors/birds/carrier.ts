@@ -2,9 +2,12 @@ import Victor = require("victor");
 import { external, inject, initialize } from "tsdi";
 import { Sprite, Animation, Game } from "phaser-ce";
 import { Bird } from "../bird";
+import { Package } from "../package";
 
 @external
 export class Carrier extends Bird {
+    private freight: Package;
+
     constructor(pos: Victor) {
         super(pos);
     }
@@ -31,6 +34,15 @@ export class Carrier extends Bird {
             ),
         };
         super.init();
+    }
+
+    public tryAttachPackage(pack: Package): boolean {
+        if (this.freight) {
+            return false;
+        }
+        this.freight = pack;
+        pack.attach(this);
+        return true;
     }
 
 }

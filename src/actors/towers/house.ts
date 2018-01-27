@@ -61,4 +61,11 @@ export class House extends Tower {
     protected getTarget(bird: Bird): Tower {
         return this.connections[0];
     }
+    protected sendBirdAway(bird: Bird) {
+        if (this.packageWaiting) {
+            if (bird.tryAttachPackage(this.packageWaiting)) {
+                delete this.packageWaiting;
+            }
+        }
+    }
 }

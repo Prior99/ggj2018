@@ -6,6 +6,7 @@ import { MAX_STAMINA, FLY_STAMINA_PER_SECOND } from "../const";
 import { Layers } from "../layers";
 import { Towers } from "../controllers/towers";
 import { Tower } from "./tower";
+import { Package } from "./package";
 
 const fps = 10;
 const acceleration = 50;
@@ -17,7 +18,7 @@ function normalizeDeg(deg: number) {
     return deg;
 }
 
-export class Bird {
+export abstract class Bird {
     @inject protected game: Game;
     @inject private layers: Layers;
     @inject private towers: Towers;
@@ -38,7 +39,7 @@ export class Bird {
     private current = false;
 
     // Graphics stuff.
-    protected sprite: Sprite;
+    public sprite: Sprite;
     protected animations: {
         flap: Animation;
         idle: Animation;
@@ -191,4 +192,6 @@ export class Bird {
         this.sprite.x = this.pos.x;
         this.sprite.y = this.pos.y;
     }
+
+    public abstract tryAttachPackage(pack: Package): boolean;
 }
