@@ -4,7 +4,6 @@ import Victor = require("victor");
 import { STAMINA_PER_SECOND } from "../const";
 import { Bird } from "./bird";
 
-@external
 export abstract class Tower {
     @inject private game: Game;
 
