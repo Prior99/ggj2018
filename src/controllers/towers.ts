@@ -25,7 +25,10 @@ export class Towers extends EventEmitter {
     }
 
     public update(dt: number) {
-        this.changed = this.towers.some(tower => tower.update(dt));
+        this.changed = this.towers.reduce((result, tower) => tower.update(dt) || result, false);
+    }
+    public render() {
+        this.towers.forEach(tower => tower.render());
     }
 
     public get allActive() { return this.towers; }

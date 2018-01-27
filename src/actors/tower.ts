@@ -1,5 +1,5 @@
 import { external, inject, initialize } from "tsdi";
-import { Sprite, Animation, Game } from "phaser-ce";
+import { Sprite, Animation, Game, Line } from "phaser-ce";
 import Victor = require("victor");
 import { REST_STAMINA_PER_SECOND } from "../const";
 import { Bird } from "./bird";
@@ -17,6 +17,7 @@ export abstract class Tower {
     protected birds: Bird[] = [];
 
     protected connections: Tower[] = [];
+    private lines: Line[] = [];
 
     constructor(pos: Victor, capacity = 4) {
         this.pos = pos;
@@ -68,6 +69,9 @@ export abstract class Tower {
         if (this.canConnect(tower)) {
             this.connections.push(tower);
             this.postConnect(tower);
+            const line = new Line();
+            line.fromSprite(this.sprite, tower.sprite);
+            this.lines.push(line);
             return true;
         }
 
@@ -95,5 +99,8 @@ export abstract class Tower {
         this.birds = this.birds.filter((bird) => !bird.target);
 
         return false;
+    }
+    public render() {
+        this.lines.forEach(line => this.game.debug.geom(line, "#FFFFFF"));
     }
 }
