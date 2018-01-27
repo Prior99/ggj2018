@@ -22,7 +22,7 @@ export class House extends Tower {
     private packageInterval = PACKAGE_INTERVAL + Math.random() * PACKAGE_INTERVAL_VARIETY;
 
     constructor(pos: Victor) {
-        super(pos, 1);
+        super(pos, 1, [{x: 16, y: -2}]);
         this.pos = pos;
     }
 

@@ -12,15 +12,21 @@ export abstract class Tower {
 
     protected sprite: Sprite;
     public birds: Bird[];
+    public seatingOffsets: {x: number, y: number}[];
 
     protected connections: Tower[] = [];
     private lines: Line[] = [];
     private warning: Sprite;
 
-    constructor(pos: Victor, capacity = 4) {
+    constructor(
+        pos: Victor,
+        capacity = 4,
+        seatingOffsets = [{x: 6, y: 4}, {x: -6, y: 4}, {x: 14, y: 4}, {x: -14, y: 4}],
+    ) {
         this.pos = pos;
 
         this.birds = Array(capacity).fill(undefined);
+        this.seatingOffsets = seatingOffsets;
     }
 
     protected init() {
@@ -47,10 +53,9 @@ export abstract class Tower {
         }, 0);
         this.birds[freeIndex] = bird;
 
-        const xOffset = [6, -6, 14, -14];
         return this.birds.reduce((result: Victor, current: Bird, index: number) => {
             if (bird === current) {
-                const offset = new Victor(xOffset[index], 4);
+                const offset = new Victor(this.seatingOffsets[index].x, this.seatingOffsets[index].y);
                 return this.pos.clone().add(offset);
             }
             return result;
