@@ -23,6 +23,8 @@ export class Bird {
     @inject private layers: Layers;
     @inject private towers: Towers;
 
+    public timeOfDeath: number;
+
     public pos: Victor;
     private velocity: Victor;
 
@@ -65,6 +67,9 @@ export class Bird {
         this.sprite.anchor.y = 0.5;
         this.sprite.inputEnabled = true;
         this.sprite.events.onInputOver.add(() => console.log(this));
+        this.sprite.events.onInputDown.add(() => {
+            this.timeOfDeath = this.game.time.time / 1000;
+        });
 
         this.layers.sky.add(this.sprite);
 
@@ -221,6 +226,10 @@ export class Bird {
         // Graphics.
         this.sprite.x = this.pos.x;
         this.sprite.y = this.pos.y;
+    }
+
+    public die() {
+        this.sprite.destroy();
     }
 
     // public get target() {
