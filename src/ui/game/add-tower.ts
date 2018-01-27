@@ -14,6 +14,8 @@ class AddTowerButton {
     public init() {
         this.button = this.game.add.button(20, 20, "add-tower-button", this.click, this);
         this.button.fixedToCamera = true;
+        this.button.scale.x = 0.5;
+        this.button.scale.y = 0.5;
     }
 
     private click(): void {
