@@ -27,7 +27,8 @@ export class House extends Tower {
     }
 
     @initialize
-    private initHouse() {
+    protected init() {
+        super.init();
         this.sprite = this.game.add.sprite(this.pos.x, this.pos.y, "house");
         this.sprite.anchor.x = 0.5;
         this.sprite.anchor.y = 0.5;

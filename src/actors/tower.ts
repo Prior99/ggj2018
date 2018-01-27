@@ -17,6 +17,7 @@ export abstract class Tower {
 
     protected connections: Tower[] = [];
     private lines: Line[] = [];
+    private warning: Sprite;
 
     constructor(pos: Victor, capacity = 4) {
         this.pos = pos;
@@ -25,9 +26,8 @@ export abstract class Tower {
         this.perch = [undefined, undefined, undefined, undefined];
     }
 
-    @initialize
-    private init() {
-        return;
+    protected init() {
+        this.checkConnection();
     }
 
     protected abstract getTarget(bird: Bird): Tower;
@@ -74,6 +74,7 @@ export abstract class Tower {
             const line = new Line();
             line.fromSprite(this.sprite, tower.sprite);
             this.lines.push(line);
+            this.checkConnection();
             return true;
         }
 
@@ -88,13 +89,29 @@ export abstract class Tower {
         }
 
         this.connections = this.connections.splice(connectionIndex, 1);
+        this.checkConnection();
+    }
+
+    private checkConnection() {
+        if (this.connections.length === 0) {
+            if (!this.warning) {
+                this.warning = this.game.add.sprite(this.pos.x, this.pos.y - 14, "warning");
+                this.warning.alpha = 0;
+                this.game.add.tween(this.warning).to({ alpha: 1 }, 1000, "Linear", true, 0, -1).yoyo(true);
+            }
+        } else {
+            if (this.warning)  {
+                this.warning.destroy();
+                delete this.warning;
+            }
+        }
     }
 
     public update(dt: number) {
         this.birds.forEach((bird, index) => {
             bird.stamina += dt * REST_STAMINA_PER_SECOND;
 
-            if (bird.isRested()) {
+            if (bird.isRested) {
                 bird.target = this.getTarget(bird);
             }
         });

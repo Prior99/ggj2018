@@ -109,7 +109,7 @@ export class Bird {
         this.currentStamina = Math.min(value, this.maxStamina);
     }
 
-    public isRested() {
+    public get isRested() {
         return this.stamina >= this.maxStamina;
     }
 
