@@ -9,3 +9,5 @@ export const TILE_SIZE = 32;
 export const CAMERA_SPEED = 6;
 
 export const ZOOM = 2;
+export const PACKAGE_INTERVAL = 5;
+export const PACKAGE_INTERVAL_VARIETY = 5;

@@ -4,6 +4,7 @@ import Victor = require("victor");
 import { Towers } from "../controllers/towers";
 import { Pidgeons } from "../controllers/pidgeons";
 import { Houses } from "../controllers/houses";
+import { Packages } from "../controllers/packages";
 import { World } from "../world";
 import { CAMERA_SPEED, ZOOM } from "../const";
 import { Controller } from "../controller";
@@ -26,6 +27,7 @@ export class StateGame extends State {
         this.controllers.push(this.tsdi.get(Houses));
         this.controllers.push(this.tsdi.get(Towers));
         this.controllers.push(this.tsdi.get(Pidgeons));
+        this.controllers.push(this.tsdi.get(Packages));
 
         this.cursor = this.game.input.keyboard.createCursorKeys();
         this.game.physics.startSystem(Phaser.Physics.ARCADE);

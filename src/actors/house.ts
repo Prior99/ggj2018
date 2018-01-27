@@ -1,10 +1,14 @@
 import { external, inject, initialize } from "tsdi";
 import { Sprite, Animation, Game } from "phaser-ce";
 import Victor = require("victor");
+import { Packages } from "../controllers/packages";
+import { Package } from "./package";
+import { PACKAGE_INTERVAL_VARIETY, PACKAGE_INTERVAL } from "../const";
 
 @external
 export class House {
     @inject private game: Game;
+    @inject private packages: Packages;
 
     public pos: Victor;
 
@@ -12,6 +16,10 @@ export class House {
     private animations: {
         default: Animation;
     };
+
+    private packageWaiting: Package;
+    private timeSinceLastPackage = 0;
+    private packageInterval = PACKAGE_INTERVAL + Math.random() * PACKAGE_INTERVAL_VARIETY;
 
     constructor(pos: Victor) {
         this.pos = pos;
@@ -30,6 +38,14 @@ export class House {
         };
     }
     public update(dt: number) {
+        if (!this.packageWaiting) {
+            this.timeSinceLastPackage += dt;
+            if (this.timeSinceLastPackage > this.packageInterval) {
+                this.packages.generatePackage(this.pos.clone().add(new Victor(16, 4)), this);
+            }
+        } else {
+            this.timeSinceLastPackage = 0;
+        }
         return;
     }
 }

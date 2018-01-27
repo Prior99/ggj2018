@@ -3,7 +3,7 @@ import Victor = require("victor");
 import { House } from "../actors/house";
 import { Controller } from "../controller";
 
-@component
+@component("Houses")
 export class Houses implements Controller {
     private houses: House[] = [];
 
@@ -15,5 +15,11 @@ export class Houses implements Controller {
 
     public update(dt: number) {
         this.houses.forEach(house => house.update(dt));
+    }
+
+    public randomExcept(except: House) {
+        const houses = this.houses.filter(house => house !== except);
+        const index = Math.floor(houses.length * Math.random());
+        return houses[index];
     }
 }

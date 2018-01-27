@@ -12,6 +12,7 @@ export class StateBoot extends State {
         this.game.load.atlas("weed", "/assets/weed.png", "/assets/weed.json");
         this.game.load.atlas("house", "/assets/house.png", "/assets/house.json");
         this.game.load.audio("song", "/sounds/song.wav");
+        this.game.load.atlas("package", "/assets/package.png", "/assets/package.json");
     }
 
     public create() {
