@@ -29,8 +29,11 @@ export class Bird {
     public currentStamina: number;
     public maxStamina: number = MAX_STAMINA;
 
-    // Managed by `Bird`. There is a setter for the target
-    private privateTarget: Tower;
+    private idleAnimationStart = 0;
+    private idleAnimationDuration = 0;
+
+    // Managed by `Bird`.
+    public target: Tower;
     private badTargets: Tower[];
 
     private current = false;
@@ -38,12 +41,11 @@ export class Bird {
     // Graphics stuff.
     private sprite: Sprite;
     private animations: {
-        default: {
-            flap: Animation;
-        },
-        current: {
-            flap: Animation;
-        };
+        flap: Animation;
+        idle: Animation;
+        head1: Animation;
+        head2: Animation;
+        wing: Animation;
     };
 
     constructor(pos: Victor) {
@@ -67,18 +69,24 @@ export class Bird {
         this.layers.sky.add(this.sprite);
 
         this.animations = {
-            default: {
-                flap: this.sprite.animations.add(
-                    "defaultFlap", Animation.generateFrameNames("seagull ", 0, 6, ".ase", 1),
-                ),
-            },
-            current: {
-                flap: this.sprite.animations.add(
-                    "currentFlap", Animation.generateFrameNames("seagull ", 6, 9, ".ase", 1),
-                ),
-            },
+            flap: this.sprite.animations.add(
+                "flap", Animation.generateFrameNames("seagull ", 0, 5, ".ase", 1),
+            ),
+            idle: this.sprite.animations.add(
+                "idleDefault", Animation.generateFrameNames("seagull ", 8, 8, ".ase", 1),
+            ),
+            head1: this.sprite.animations.add(
+                "idleHead1", Animation.generateFrameNames("seagull ", 9, 9, ".ase", 1),
+            ),
+            head2: this.sprite.animations.add(
+                "idleHead2", Animation.generateFrameNames("seagull ", 10, 10, ".ase", 1),
+            ),
+            wing: this.sprite.animations.add(
+                "idleWing", Animation.generateFrameNames("seagull ", 11, 11, ".ase", 1),
+            ),
         };
 
+        this.startFlapping();
         this.follow = this.current;
 
         this.selectRandomTarget();
@@ -86,15 +94,7 @@ export class Bird {
 
     public set follow(follow: boolean) {
         this.current = follow;
-
-        if (this.current) {
-            this.animations.current.flap.play(fps, true);
-            this.sprite.tint = Phaser.Color.RED;
-        } else {
-            this.animations.default.flap.play(fps, true);
-            this.animations.default.flap.setFrame(Math.floor(Math.random() * 7), true);
-            this.sprite.tint = Phaser.Color.WHITE;
-        }
+        this.sprite.tint = this.current ? Phaser.Color.RED : Phaser.Color.WHITE;
     }
 
     public get follow() {
@@ -113,12 +113,24 @@ export class Bird {
         return this.stamina >= this.maxStamina;
     }
 
-    public get target() {
-        return this.privateTarget;
+    public startFlapping() {
+        this.animations.flap.play(fps, true);
+        this.animations.flap.setFrame(Math.floor(Math.random() * 7), true);
     }
 
-    public set target(newTarget: Tower) {
-        this.privateTarget = newTarget;
+    private selectAnimation() {
+        const currentTime = this.game.time.time / 1000;
+        if (currentTime > this.idleAnimationStart + this.idleAnimationDuration) {
+            this.idleAnimationStart = currentTime;
+            this.idleAnimationDuration = 0.4 + Math.random() / 3;
+
+            const index = Math.min(Math.floor(Math.random() * 4), 3);
+            const animationKey = ["idle", "head1", "head2", "wing"][index];
+            const animation = this.animations[animationKey];
+
+            this.follow = this.current;
+            animation.play(fps, true);
+        }
     }
 
     private selectRandomTarget() {
@@ -154,20 +166,24 @@ export class Bird {
         const { towers, badTargets } = this;
         // Behavior.
         if (!this.target) {
-            // Do nothing, since no target, aka. sitting on tower.
+            this.selectAnimation();
         } else {
             // Bird is in midair and flying somewhere.
             this.stamina -= dt * FLY_STAMINA_PER_SECOND;
 
             const target = this.target;
             const targetPosition = target.position;
-            if (targetPosition.subtract(this.pos).length() < 15) {
+            if (targetPosition.subtract(this.pos).length() < 10) {
                 // Bird reached its target. Initiate landing...
-                if (this.target.land(this)) {
+                const landPosition = this.target.land(this);
+                if (landPosition) {
                     // Drop list list of bad towers and the target also.
                     this.badTargets = [];
                     this.target = undefined;
                     this.velocity = new Victor(0, 0);
+
+                    this.pos = landPosition;
+                    this.sprite.angle = 0;
                 } else {
                     // Push the tower to list of tested towers. (To not oscillate between towers)
                     this.badTargets.push(this.target);

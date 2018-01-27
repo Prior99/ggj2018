@@ -12,8 +12,7 @@ export abstract class Tower {
 
     protected sprite: Sprite;
     protected capacity: number;
-    public perch: Bird[];
-    public birds: Bird[] = [];
+    public birds: Bird[] = [undefined, undefined, undefined, undefined];
 
     protected connections: Tower[] = [];
     private lines: Line[] = [];
@@ -23,7 +22,6 @@ export abstract class Tower {
         this.pos = pos;
 
         this.capacity = capacity;
-        this.perch = [undefined, undefined, undefined, undefined];
     }
 
     protected init() {
@@ -33,32 +31,31 @@ export abstract class Tower {
     protected abstract getTarget(bird: Bird): Tower;
 
     public isFull(): boolean {
-        return this.birds.length === this.capacity;
+        return this.birds.every(bird => bird !== undefined);
     }
 
     public get position(): Victor {
         return this.pos.clone();
     }
 
-    public getSpotPosition(bird: Bird): Victor {
-        const xOffset = [20, -20, 60, -60];
-        this.perch.forEach((registered, index) => {
-            if (bird === registered) {
+    public land(bird: Bird): Victor {
+        if (this.isFull()) {
+            return undefined;
+        }
+
+        const freeIndex = this.birds.reduce((bestIndex, seat, currentIndex) => {
+            return seat === undefined ? currentIndex : bestIndex;
+        }, 0);
+        this.birds[freeIndex] = bird;
+
+        const xOffset = [4, -4, 12, -12];
+        return this.birds.reduce((result: Victor, current: Bird, index: number) => {
+            if (bird === current) {
                 const offset = new Victor(xOffset[index], 0);
                 return this.pos.clone().add(offset);
             }
-        });
-        return this.pos.clone();
-    }
-
-    public land(bird: Bird): boolean {
-        if (this.isFull()) {
-            return false;
-        }
-
-        this.birds.push(bird);
-
-        return true;
+            return result;
+        }, undefined);
     }
 
     public abstract canConnect(tower: Tower): boolean;
@@ -109,14 +106,19 @@ export abstract class Tower {
 
     public update(dt: number) {
         this.birds.forEach((bird, index) => {
+            if (bird === undefined) {
+                return;
+            }
             bird.stamina += dt * REST_STAMINA_PER_SECOND;
 
             if (bird.isRested) {
                 bird.target = this.getTarget(bird);
+                bird.startFlapping();
             }
         });
-        this.birds = this.birds.filter((bird) => !bird.target);
+        this.birds = this.birds.map((bird) => bird && bird.target ? undefined : bird);
     }
+
     public render() {
         // this.lines.forEach(line => this.game.debug.geom(line, "rgba(255, 255, 255, 0.3)"));
     }
