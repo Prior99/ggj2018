@@ -57,22 +57,23 @@ export class Bird {
         this.target = undefined;
         this.badTargets = [];
 
-        this.sprite = this.game.add.sprite(this.pos.x, this.pos.y, "pidgeon");
+        this.sprite = this.game.add.sprite(this.pos.x, this.pos.y, "seagull");
         this.sprite.anchor.x = 0.5;
         this.sprite.anchor.y = 0.5;
 
         this.animations = {
             default: {
                 flap: this.sprite.animations.add(
-                    "defaultFlap", Animation.generateFrameNames("pidgeon ", 0, 3, ".ase", 1),
+                    "defaultFlap", Animation.generateFrameNames("seagull ", 0, 6, ".ase", 1),
                 ),
             },
             current: {
                 flap: this.sprite.animations.add(
-                    "currentFlap", Animation.generateFrameNames("pidgeon ", 4, 7, ".ase", 1),
+                    "currentFlap", Animation.generateFrameNames("seagull ", 6, 9, ".ase", 1),
                 ),
             },
         };
+        this.animations.default.flap.reversed = true;
 
         this.follow = this.current;
 
