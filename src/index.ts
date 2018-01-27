@@ -12,6 +12,7 @@ export class GGJ2018 extends Phaser.Game {
         this.state.add("main-menu", States.StateMainMenu);
         this.state.add("game", States.StateGame);
         this.state.start("boot");
+        this.antialias = false
     }
 }
 
@@ -22,8 +23,8 @@ class GameFactory {
     @factory({ name: "GGJ2018" })
     public createGame(): GGJ2018 {
         const gameConfig: Phaser.IGameConfig = {
-            width: 800,
-            height: 600,
+            width: 400,
+            height: 300,
             renderer: Phaser.AUTO,
             parent: "",
             resolution: 1,
@@ -41,5 +42,5 @@ class GameFactory {
 window.onload = async () => {
     const tsdi = new TSDI();
     tsdi.enableComponentScanner();
-    tsdi.get(GGJ2018);
+    (window as any).game = tsdi.get(GGJ2018);
 };

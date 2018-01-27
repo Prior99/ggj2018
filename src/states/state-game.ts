@@ -67,6 +67,6 @@ export class StateGame extends State {
     public render() {
         const { DEBUG_CAMERA } = window as any;
         if (DEBUG_CAMERA) { this.game.debug.cameraInfo(this.game.camera, 32, 32); }
-        this.controllers.forEach(controller => controller.render && controller.render);
+        this.controllers.forEach(controller => controller.render && controller.render());
     }
 }
