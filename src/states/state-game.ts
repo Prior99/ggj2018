@@ -7,14 +7,12 @@ import { Houses } from "../controllers/houses";
 import { World } from "../world";
 import { CAMERA_SPEED, ZOOM } from "../const";
 import { Controller } from "../controller";
+import { UI } from "../ui/game-ui";
 
 @external
 export class StateGame extends State {
     @inject private tsdi: TSDI;
 
-    private pidgeons: Pidgeons;
-    private towers: Towers;
-    private gameWorld: World;
     private dragPoint: Point;
     private cursor: CursorKeys;
     private controllers: Controller[] = [];
@@ -22,6 +20,7 @@ export class StateGame extends State {
     public create() {
         this.stage.backgroundColor = "#222222";
         this.tsdi.get(World);
+        this.tsdi.get(UI);
 
         this.controllers.push(this.tsdi.get(Houses));
         this.controllers.push(this.tsdi.get(Towers));
