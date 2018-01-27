@@ -1,6 +1,8 @@
 import { external, inject, initialize } from "tsdi";
 import { Sprite, Animation, Game } from "phaser-ce";
 import Victor = require("victor");
+
+import { MAX_STAMINA } from "../const";
 import { Towers } from "../controllers/towers";
 import { Tower } from "./tower";
 
@@ -22,22 +24,32 @@ export class Bird {
     public angle = Math.random() * 360;
     private turnSpeed = Math.random() * 5;
     public currentStamina: number;
-    public maxStamina: number;
+    public maxStamina: number = MAX_STAMINA;
 
     // Managed by `Bird`.
     public target: Tower;
     private badTargets: Tower[];
+
+    private current = false;
 
     // public angle = Math.random() * 360;
     // private turnSpeed = Math.random() * 5;
 
     // Graphics stuff.
     private sprite: Sprite;
-    private flap: Animation;
+    private animations: {
+        default: {
+            flap: Animation;
+        },
+        current: {
+            flap: Animation;
+        };
+    };
 
     constructor(pos: Victor) {
         this.pos = pos;
 
+        this.currentStamina = this.maxStamina;
     }
 
     @initialize
@@ -46,10 +58,36 @@ export class Bird {
         this.badTargets = [];
 
         this.sprite = this.game.add.sprite(this.pos.x, this.pos.y, "pidgeon");
-        this.flap = this.sprite.animations.add("flap", Animation.generateFrameNames("pidgeon ", 0, 3, ".ase", 1));
-        this.flap.play(fps, true);
+        this.animations = {
+            default: {
+                flap: this.sprite.animations.add(
+                    "defaultFlap", Animation.generateFrameNames("pidgeon ", 0, 3, ".ase", 1),
+                ),
+            },
+            current: {
+                flap: this.sprite.animations.add(
+                    "currentFlap", Animation.generateFrameNames("pidgeon ", 4, 7, ".ase", 1),
+                ),
+            },
+        };
+
+        this.follow = this.current;
 
         this.selectRandomTarget();
+    }
+
+    public set follow(follow: boolean) {
+        this.current = follow;
+
+        if (this.current) {
+            this.animations.current.flap.play(fps, true);
+        } else {
+            this.animations.default.flap.play(fps, true);
+        }
+    }
+
+    public get follow() {
+        return this.current;
     }
 
     public get stamina() {
@@ -93,29 +131,29 @@ export class Bird {
     }
 
     public update(dt: number) {
-        const { towers, target, badTargets, pos } = this;
+        const { towers, badTargets, pos } = this;
 
         // Behavior.
-        if (!Boolean(target)) {
+        if (!Boolean(this.target)) {
             // Do nothing, since no target, aka. sitting on tower.
         } else {
             // Bird is in midair and flying somewhere.
-            if (target.position.subtract(pos).length() < 0.2) {
-                if (target.land(this)) {
+            if (this.target.position.subtract(pos).length() < 1) {
+                if (this.target.land(this)) {
                     // Drop list list of bad towers and the target also.
                     this.badTargets = [];
                     this.target = undefined;
                 } else {
                     // Push the tower to list of tested towers. (To not oscillate between towers)
-                    this.badTargets.push(target);
+                    this.badTargets.push(this.target);
                     this.selectRandomTarget();
                 }
             }
         }
 
         // Movement.
-        if (target) {
-            const diff = target.position.subtract(pos).normalize().multiplyScalar(dt * speed);
+        if (this.target) {
+            const diff = this.target.position.subtract(pos).normalize().multiplyScalar(dt * speed);
 
             // TODO fix the following code.
             // const targetAngle = normalizeDeg(target.clone().subtract(this.pos).angleDeg());

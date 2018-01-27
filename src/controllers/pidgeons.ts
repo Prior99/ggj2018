@@ -13,6 +13,8 @@ export class Pidgeons {
             const y = Math.random() * 600;
             this.pidgeons.push(new Bird(new Victor(x, y)));
         }
+
+        this.pidgeons[0].follow = true;
     }
 
     public update(dt: number) {
