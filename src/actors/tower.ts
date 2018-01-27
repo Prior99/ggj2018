@@ -48,10 +48,10 @@ export abstract class Tower {
         }, 0);
         this.birds[freeIndex] = bird;
 
-        const xOffset = [4, -4, 12, -12];
+        const xOffset = [6, -6, 14, -14];
         return this.birds.reduce((result: Victor, current: Bird, index: number) => {
             if (bird === current) {
-                const offset = new Victor(xOffset[index], 0);
+                const offset = new Victor(xOffset[index], 4);
                 return this.pos.clone().add(offset);
             }
             return result;
