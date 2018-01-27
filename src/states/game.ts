@@ -1,17 +1,22 @@
 import { State, Animation, Keyboard } from "phaser-ce";
-import { external, inject } from "tsdi";
+import { external, inject, TSDI } from "tsdi";
 import { Towers } from "../controllers/towers";
 import { Pidgeons } from "../controllers/pidgeons";
+import { World } from "../world";
 
 @external
 export class Game extends State {
-    @inject private pidgeons: Pidgeons;
-    @inject private towers: Towers;
+    @inject private tsdi: TSDI;
+
+    private pidgeons: Pidgeons;
+    private towers: Towers;
+    private gameWorld: World;
 
     public create() {
         this.stage.backgroundColor = "#222222";
-        this.pidgeons.init();
-        this.towers.init();
+        this.pidgeons = this.tsdi.get(Pidgeons);
+        this.towers = this.tsdi.get(Towers);
+        this.gameWorld = this.tsdi.get(World);
     }
 
     public update() {

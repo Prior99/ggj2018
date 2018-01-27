@@ -1,13 +1,14 @@
-import { component, inject } from "tsdi";
+import { component, inject, initialize } from "tsdi";
 import { EventEmitter } from "events";
 import Victor = require("victor");
 import { Tower } from "../actors/tower";
 
-@component({ name: "Towers", eager: true })
+@component
 export class Towers extends EventEmitter {
     private towers: Tower[] = [];
     public changed = true;
 
+    @initialize
     public init() {
         this.towers.push(new Tower(new Victor(400, 50), 0, 8, 2, true));
         this.towers.push(new Tower(new Victor(600, 180), 2, 8, 2, false));

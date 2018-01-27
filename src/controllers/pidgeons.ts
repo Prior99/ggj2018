@@ -1,4 +1,4 @@
-import { component } from "tsdi";
+import { component, initialize } from "tsdi";
 import Victor = require("victor");
 import { Pidgeon } from "../actors/pidgeon";
 
@@ -6,6 +6,7 @@ import { Pidgeon } from "../actors/pidgeon";
 export class Pidgeons {
     private pidgeons: Pidgeon[] = [];
 
+    @initialize
     public init() {
         for (let i = 0; i < 50; ++i) {
             const x = Math.random() * 800;
