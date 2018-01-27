@@ -1,0 +1,102 @@
+{ "frames": {
+   "crow 0.ase": {
+    "frame": { "x": 0, "y": 0, "w": 17, "h": 15 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 15 },
+    "sourceSize": { "w": 17, "h": 15 },
+    "duration": 100
+   },
+   "crow 1.ase": {
+    "frame": { "x": 17, "y": 0, "w": 17, "h": 15 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 15 },
+    "sourceSize": { "w": 17, "h": 15 },
+    "duration": 100
+   },
+   "crow 2.ase": {
+    "frame": { "x": 34, "y": 0, "w": 17, "h": 15 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 15 },
+    "sourceSize": { "w": 17, "h": 15 },
+    "duration": 100
+   },
+   "crow 3.ase": {
+    "frame": { "x": 51, "y": 0, "w": 17, "h": 15 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 15 },
+    "sourceSize": { "w": 17, "h": 15 },
+    "duration": 100
+   },
+   "crow 4.ase": {
+    "frame": { "x": 68, "y": 0, "w": 17, "h": 15 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 15 },
+    "sourceSize": { "w": 17, "h": 15 },
+    "duration": 100
+   },
+   "crow 5.ase": {
+    "frame": { "x": 85, "y": 0, "w": 17, "h": 15 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 15 },
+    "sourceSize": { "w": 17, "h": 15 },
+    "duration": 100
+   },
+   "crow 6.ase": {
+    "frame": { "x": 102, "y": 0, "w": 17, "h": 15 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 15 },
+    "sourceSize": { "w": 17, "h": 15 },
+    "duration": 100
+   },
+   "crow 7.ase": {
+    "frame": { "x": 119, "y": 0, "w": 17, "h": 15 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 15 },
+    "sourceSize": { "w": 17, "h": 15 },
+    "duration": 100
+   },
+   "crow 8.ase": {
+    "frame": { "x": 136, "y": 0, "w": 17, "h": 15 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 15 },
+    "sourceSize": { "w": 17, "h": 15 },
+    "duration": 100
+   },
+   "crow 9.ase": {
+    "frame": { "x": 153, "y": 0, "w": 17, "h": 15 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 17, "h": 15 },
+    "sourceSize": { "w": 17, "h": 15 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.3-dev",
+  "image": "/home/prior/repositories/ggj2018/ase/crow.png",
+  "format": "I8",
+  "size": { "w": 170, "h": 15 },
+  "scale": "1",
+  "frameTags": [
+   { "name": "Flap", "from": 0, "to": 5, "direction": "forward" },
+   { "name": "Stand", "from": 6, "to": 6, "direction": "forward" },
+   { "name": "Wiggle Tail", "from": 7, "to": 8, "direction": "forward" },
+   { "name": "Tuck in Head", "from": 9, "to": 9, "direction": "forward" }
+  ],
+  "layers": [
+   { "name": "Sprite Sheet", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}
