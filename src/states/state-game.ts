@@ -5,7 +5,7 @@ import { Towers } from "../controllers/towers";
 import { Pidgeons } from "../controllers/pidgeons";
 import { Houses } from "../controllers/houses";
 import { World } from "../world";
-import { CAMERA_SPEED } from "../const";
+import { CAMERA_SPEED, ZOOM } from "../const";
 import { Controller } from "../controller";
 
 @external
@@ -33,7 +33,7 @@ export class StateGame extends State {
         this.game.camera.focusOnXY(0, 0);
 
         this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
-        this.scale.setUserScale(2, 2);
+        this.scale.setUserScale(ZOOM, ZOOM);
         this.game.renderer.renderSession.roundPixels = true;
         Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
     }

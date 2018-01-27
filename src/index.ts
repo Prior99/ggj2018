@@ -3,6 +3,7 @@ import "pixi";
 import * as Phaser from "phaser-ce";
 import { TSDI, component, factory, external } from "tsdi";
 import * as States from "./states";
+import { ZOOM } from "./const";
 
 @external
 export class GGJ2018 extends Phaser.Game {
@@ -23,8 +24,8 @@ class GameFactory {
     @factory({ name: "GGJ2018" })
     public createGame(): GGJ2018 {
         const gameConfig: Phaser.IGameConfig = {
-            width: 400,
-            height: 300,
+            width: document.body.offsetWidth / ZOOM,
+            height: document.body.offsetHeight / ZOOM,
             renderer: Phaser.AUTO,
             parent: "",
             resolution: 1,
