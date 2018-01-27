@@ -11,7 +11,6 @@ export abstract class Tower {
     private sprite: Sprite;
     private animations: {
         active: Animation;
-        inactive: Animation;
     };
 
     protected capacity: number;
@@ -33,13 +32,10 @@ export abstract class Tower {
 
         this.animations = {
             active: this.sprite.animations.add(
-                "active", Animation.generateFrameNames("tower ", 0, 0, ".ase", 1),
-            ),
-            inactive: this.sprite.animations.add(
-                "inactive", Animation.generateFrameNames("tower ", 1, 1, ".ase", 1),
+                "active", Animation.generateFrameNames("tower ", 0, 1, ".ase", 1),
             ),
         };
-        this.setAnimation();
+        this.animations.active.play(1, true);
     }
 
     protected abstract getTarget(bird: Bird): Tower;
@@ -98,15 +94,6 @@ export abstract class Tower {
         });
         this.birds = this.birds.filter((bird) => !bird.target);
 
-        this.setAnimation();
         return false;
-    }
-
-    private setAnimation() {
-        if (this.isFull()) {
-            this.animations.inactive.play(1, true);
-        } else {
-            this.animations.active.play(1, true);
-        }
     }
 }
