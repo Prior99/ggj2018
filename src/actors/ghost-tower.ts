@@ -2,9 +2,12 @@ import { external, inject, initialize } from "tsdi";
 import { Sprite, Button, Game } from "phaser-ce";
 import Victor = require("victor");
 
+import { Layers } from "../layers";
+
 @external
 export class GhostTower {
     @inject private game: Game;
+    @inject private layers: Layers;
 
     private initialPosition: Victor;
     private spriteName: string;
@@ -24,6 +27,8 @@ export class GhostTower {
         );
         this.ghost.alpha = 0.5;
         this.ghost.anchor.setTo(0.5, 0.5);
+
+        this.layers.ground.add(this.ghost);
     }
 
     private spawn(): void {

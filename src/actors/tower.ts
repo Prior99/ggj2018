@@ -2,10 +2,12 @@ import { external, inject, initialize } from "tsdi";
 import { Sprite, Animation, Game, Line } from "phaser-ce";
 import Victor = require("victor");
 import { REST_STAMINA_PER_SECOND } from "../const";
+import { Layers } from "../layers";
 import { Bird } from "./bird";
 
 export abstract class Tower {
     @inject private game: Game;
+    @inject private layers: Layers;
 
     private pos: Victor;
     private sprite: Sprite;
@@ -32,6 +34,8 @@ export abstract class Tower {
         this.sprite = this.game.add.sprite(this.pos.x, this.pos.y, "tower");
         this.sprite.anchor.x = 0.5;
         this.sprite.anchor.y = 0.5;
+
+        this.layers.ground.add(this.sprite);
 
         this.animations = {
             active: this.sprite.animations.add(

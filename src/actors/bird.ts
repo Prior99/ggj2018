@@ -3,6 +3,7 @@ import { Sprite, Animation, Game } from "phaser-ce";
 import Victor = require("victor");
 
 import { MAX_STAMINA, FLY_STAMINA_PER_SECOND } from "../const";
+import { Layers } from "../layers";
 import { Towers } from "../controllers/towers";
 import { Tower } from "./tower";
 
@@ -19,6 +20,7 @@ function normalizeDeg(deg: number) {
 @external
 export class Bird {
     @inject private game: Game;
+    @inject private layers: Layers;
     @inject private towers: Towers;
 
     public pos: Victor;
@@ -59,6 +61,8 @@ export class Bird {
         this.sprite = this.game.add.sprite(this.pos.x, this.pos.y, "seagull");
         this.sprite.anchor.x = 0.5;
         this.sprite.anchor.y = 0.5;
+
+        this.layers.sky.add(this.sprite);
 
         this.animations = {
             default: {
