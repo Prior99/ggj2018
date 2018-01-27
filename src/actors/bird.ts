@@ -25,7 +25,7 @@ export class Bird {
     public maxStamina: number;
 
     // Managed by `Bird`.
-    private target: Tower;
+    public target: Tower;
     private badTargets: Tower[];
 
     // public angle = Math.random() * 360;
@@ -99,7 +99,7 @@ export class Bird {
         if (!Boolean(target)) {
             // Do nothing, since no target, aka. sitting on tower.
         } else {
-            // Bird is in midair and flying somewhere
+            // Bird is in midair and flying somewhere.
             if (target.position.subtract(pos).length() < 0.2) {
                 if (target.land(this)) {
                     // Drop list list of bad towers and the target also.

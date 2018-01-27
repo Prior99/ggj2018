@@ -5,18 +5,20 @@ import { STAMINA_PER_SECOND } from "../const";
 import { Bird } from "./bird";
 
 @external
-export class Tower {
+export abstract class Tower {
     @inject private game: Game;
 
-    public pos: Victor;
+    private pos: Victor;
     private sprite: Sprite;
     private animations: {
         active: Animation;
         inactive: Animation;
     };
 
-    private capacity: number;
-    private birds: Bird[] = [];
+    protected capacity: number;
+    protected birds: Bird[] = [];
+
+    protected connections: Tower[] = [];
 
     constructor(pos: Victor, capacity = 4) {
         this.pos = pos;
@@ -38,7 +40,9 @@ export class Tower {
         this.setAnimation();
     }
 
-    private isFull(): boolean {
+    protected abstract getTarget(bird: Bird): Tower;
+
+    public isFull(): boolean {
         return this.birds.length === this.capacity;
     }
 
@@ -52,19 +56,52 @@ export class Tower {
         }
 
         this.birds.push(bird);
-        this.setAnimation();
 
         return true;
     }
 
+    public abstract canConnect(tower: Tower): boolean;
+
+    protected postConnect(target: Tower): void {
+        // No post connect action. For bidirectional towers, connect target to this
+    }
+
+    public connect(tower: Tower): boolean {
+        if (this.canConnect(tower)) {
+            this.connections.push(tower);
+            this.postConnect(tower);
+            return true;
+        }
+
+        return false;
+    }
+
+    public disconnect(tower: Tower): void {
+        const connectionIndex = this.connections.indexOf(tower);
+
+        if (connectionIndex === -1) {
+            return;
+        }
+
+        this.connections = this.connections.splice(connectionIndex, 1);
+    }
+
     public update(dt: number) {
-        this.birds.forEach((bird) => bird.stamina += STAMINA_PER_SECOND);
+        this.birds.forEach((bird) => {
+            bird.stamina += STAMINA_PER_SECOND;
+
+            if (bird.isRested()) {
+                bird.target = this.getTarget(bird);
+            }
+        });
+
+        this.setAnimation();
         return false;
     }
 
     private setAnimation() {
         if (this.isFull()) {
-            this.animations.active.play(1, true);
+            this.animations.inactive.play(1, true);
         } else {
             this.animations.active.play(1, true);
         }
