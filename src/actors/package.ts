@@ -1,11 +1,13 @@
 import { external, inject, initialize } from "tsdi";
 import { Sprite, Animation, Game } from "phaser-ce";
 import { House } from "./house";
+import { Layers } from "../layers";
 import Victor = require("victor");
 
 @external
 export class Package {
     @inject private game: Game;
+    @inject private layers: Layers;
 
     public pos: Victor;
 
@@ -22,7 +24,7 @@ export class Package {
 
     @initialize
     private init() {
-        this.sprite = this.game.add.sprite(this.pos.x, this.pos.y, "package");
+        this.sprite = this.layers.ground.create(this.pos.x, this.pos.y, "package");
         this.sprite.anchor.x = 0.5;
         this.sprite.anchor.y = 0.5;
 
