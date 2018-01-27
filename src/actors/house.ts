@@ -46,7 +46,7 @@ export class House extends Tower {
         if (!this.packageWaiting) {
             this.timeSinceLastPackage += dt;
             if (this.timeSinceLastPackage > this.packageInterval) {
-                this.packages.generatePackage(this.pos.clone().add(new Victor(16, 4)), this);
+                this.packageWaiting = this.packages.generatePackage(this.pos.clone().add(new Victor(16, 4)), this);
             }
         } else {
             this.timeSinceLastPackage = 0;

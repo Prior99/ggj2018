@@ -16,6 +16,8 @@ export class Packages implements Controller {
     }
 
     public generatePackage(pos: Victor, house: House) {
-        this.packages.push(new Package(pos, this.houses.randomExcept(house)));
+        const pack = new Package(pos, this.houses.randomExcept(house));
+        this.packages.push(pack);
+        return pack;
     }
 }
