@@ -7,6 +7,7 @@ import { Tower } from "../actors/tower";
 import { GhostTower } from "../actors/ghost-tower";
 import { SimpleTower } from "../actors/towers/simple-tower";
 import { Controller } from "../controller";
+import { Router } from "../actors/towers/router";
 
 @component("Towers")
 export class Towers implements Controller {
@@ -25,6 +26,8 @@ export class Towers implements Controller {
         this.addTower(new SimpleTower(new Victor(200, -50)));
         this.addTower(new SimpleTower(new Victor(-100, 100)));
         this.addTower(new SimpleTower(new Victor(100, 100)));
+
+        this.addTower(new Router(new Victor(0, 0)));
 
         this.towers[1].addTarget(this.towers[0]);
         this.towers[2].addTarget(this.towers[1]);

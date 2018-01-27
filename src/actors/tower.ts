@@ -147,7 +147,7 @@ export abstract class Tower {
             }
             bird.stamina += dt * REST_STAMINA_PER_SECOND;
 
-            if (bird.isRested) {
+            if (bird.isRested && this.possibleTargets.length > 0) {
                 bird.target = this.getTarget(bird);
                 bird.startFlapping();
                 this.sendBirdAway(bird);
