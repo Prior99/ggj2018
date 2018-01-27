@@ -15,6 +15,8 @@ export class StateBoot extends State {
 
         this.game.load.image("add-tower-button", "/assets/tower_add.png");
 
+        this.game.load.atlas("warning", "/assets/warning.png", "/assets/warning.json");
+
         this.game.load.audio("song", "/sounds/song.wav");
         this.game.load.atlas("package", "/assets/package.png", "/assets/package.json");
     }

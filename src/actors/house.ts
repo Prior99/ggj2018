@@ -27,7 +27,8 @@ export class House extends Tower {
     }
 
     @initialize
-    private initHouse() {
+    protected init() {
+        super.init();
         this.sprite = this.game.add.sprite(this.pos.x, this.pos.y, "house");
         this.sprite.anchor.x = 0.5;
         this.sprite.anchor.y = 0.5;
@@ -45,7 +46,7 @@ export class House extends Tower {
         if (!this.packageWaiting) {
             this.timeSinceLastPackage += dt;
             if (this.timeSinceLastPackage > this.packageInterval) {
-                this.packages.generatePackage(this.pos.clone().add(new Victor(16, 4)), this);
+                this.packageWaiting = this.packages.generatePackage(this.pos.clone().add(new Victor(16, 4)), this);
             }
         } else {
             this.timeSinceLastPackage = 0;

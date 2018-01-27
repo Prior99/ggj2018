@@ -19,7 +19,8 @@ export class SimpleTower extends Tower {
     }
 
     @initialize
-    private initSimpleTower() {
+    protected init() {
+        super.init();
         this.sprite = this.game.add.sprite(this.pos.x, this.pos.y, "tower");
         this.sprite.anchor.x = 0.5;
         this.sprite.anchor.y = 0.5;
