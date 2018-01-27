@@ -25,12 +25,11 @@ export class StateGame extends State {
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.world.setBounds(-1000, -1000, 2000, 2000);
         this.game.camera.focusOnXY(0, 0);
-        this.stage.smoothed = false;
 
-        this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
-        this.scale.setUserScale(2, 2);
-        this.game.renderer.renderSession.roundPixels = true;
-        Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
+        // this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
+        // this.scale.setUserScale(2, 2);
+        // this.game.renderer.renderSession.roundPixels = true;
+        // Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
     }
 
     public update() {

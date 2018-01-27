@@ -22,8 +22,8 @@ class GameFactory {
     @factory({ name: "GGJ2018" })
     public createGame(): GGJ2018 {
         const gameConfig: Phaser.IGameConfig = {
-            width: 400,
-            height: 300,
+            width: 800,
+            height: 600,
             renderer: Phaser.AUTO,
             parent: "",
             resolution: 1,
