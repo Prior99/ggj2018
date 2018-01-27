@@ -20,4 +20,8 @@ export class Packages implements Controller {
         this.packages.push(pack);
         return pack;
     }
+
+    public packageReachedTarget(pack: Package) {
+        this.packages = this.packages.filter(current => current !== pack);
+    }
 }

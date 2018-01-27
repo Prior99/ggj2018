@@ -41,6 +41,10 @@ class GameFactory {
 }
 
 window.onload = async () => {
+    const { fonts } = document as any;
+    if (fonts) {
+        await fonts.load("15px ancient");
+    }
     const tsdi = new TSDI();
     tsdi.enableComponentScanner();
     (window as any).game = tsdi.get(GGJ2018);

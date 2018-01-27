@@ -3,6 +3,7 @@ import { external, inject, initialize } from "tsdi";
 import { Sprite, Animation, Game } from "phaser-ce";
 import { Bird } from "../bird";
 import { Package } from "../package";
+import { Tower } from "../tower";
 
 @external
 export class Carrier extends Bird {
@@ -45,4 +46,13 @@ export class Carrier extends Bird {
         return true;
     }
 
+    public landedOn(tower: Tower) {
+        if (!this.freight) {
+            return;
+        }
+        if (this.freight.target === tower) {
+            this.freight.reachedTarget();
+            delete this.freight;
+        }
+    }
 }

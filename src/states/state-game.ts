@@ -9,6 +9,7 @@ import { World } from "../world";
 import { CAMERA_SPEED, ZOOM } from "../const";
 import { Controller } from "../controller";
 import { UI } from "../ui/game-ui";
+import { Money } from "../controllers/money";
 
 @external
 export class StateGame extends State {
@@ -22,6 +23,7 @@ export class StateGame extends State {
         this.stage.backgroundColor = "#222222";
         this.tsdi.get(World);
         this.tsdi.get(UI);
+        this.tsdi.get(Money);
 
         this.controllers.push(this.tsdi.get(Houses));
         this.controllers.push(this.tsdi.get(Towers));
@@ -69,9 +71,9 @@ export class StateGame extends State {
     }
 
     public render() {
-        const { DEBUG_CAMERA } = window as any;
+        const { DEBUG_CAMERA, DEBUG_FPS } = window as any;
         if (DEBUG_CAMERA) { this.game.debug.cameraInfo(this.game.camera, 32, 32); }
+        if (DEBUG_FPS) { this.game.debug.text(`FPS: ${this.game.time.fps}` || "FPS: --", 2, 15, "#FFFFFF"); }
         this.controllers.forEach(controller => controller.render && controller.render());
-        this.game.debug.text(`FPS: ${this.game.time.fps}` || "FPS: --", 2, 15, "#FFFFFF");
     }
 }

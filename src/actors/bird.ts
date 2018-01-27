@@ -160,6 +160,7 @@ export abstract class Bird {
                 if (landPosition) {
                     // Drop list list of bad towers and the target also.
                     this.badTargets = [];
+                    this.landedOn(this.target)
                     this.target = undefined;
                     this.velocity = new Victor(0, 0);
 
@@ -194,4 +195,5 @@ export abstract class Bird {
     }
 
     public abstract tryAttachPackage(pack: Package): boolean;
+    public abstract landedOn(target: Tower): void;
 }
