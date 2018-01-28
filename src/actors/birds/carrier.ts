@@ -7,7 +7,7 @@ import { Tower } from "../tower";
 
 @external
 export class Carrier extends Bird {
-    private freight: Package;
+    public freight: Package;
 
     constructor(pos: Victor) {
         super(pos);

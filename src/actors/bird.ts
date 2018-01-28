@@ -21,7 +21,7 @@ function normalizeDeg(deg: number) {
 export abstract class Bird {
     @inject protected game: Game;
     @inject private layers: Layers;
-    @inject private towers: Towers;
+    @inject("Towers") private towers: Towers;
 
     public pos: Victor;
     private velocity: Victor;

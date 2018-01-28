@@ -86,6 +86,7 @@ export abstract class Tower {
             return seat === undefined ? currentIndex : bestIndex;
         }, 0);
         this.birds[freeIndex] = bird;
+        this.docked(bird);
 
         return this.birds.reduce((result: Victor, current: Bird, index: number) => {
             if (bird === current) {
@@ -147,16 +148,22 @@ export abstract class Tower {
             }
             bird.stamina += dt * REST_STAMINA_PER_SECOND;
 
-            if (bird.isRested && this.possibleTargets.length > 0) {
-                bird.target = this.getTarget(bird);
-                bird.startFlapping();
-                this.sendBirdAway(bird);
+            if (bird.isRested) {
+                const target = this.getTarget(bird);
+                if (target) {
+                    bird.startFlapping();
+                    this.sendBirdAway(bird);
+                }
             }
         });
         this.birds = this.birds.map((bird) => bird && bird.target ? undefined : bird);
     }
 
     protected sendBirdAway(bird: Bird) {
+        return;
+    }
+
+    protected docked(bird: Bird) {
         return;
     }
 

@@ -4,10 +4,12 @@ import { Sprite, Animation, Game } from "phaser-ce";
 import { Bird } from "../bird";
 import { Package } from "../package";
 import { Tower } from "../tower";
+import { Query } from "../towers/router";
 
 @external
 export class Discovery  extends Bird {
-    private freight: Package;
+    public query: Query;
+    private discoveryStart: Tower;
 
     constructor(pos: Victor) {
         super(pos);
