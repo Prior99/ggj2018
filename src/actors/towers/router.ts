@@ -208,7 +208,7 @@ export class Router extends Tower {
             active: [],
             started: new Date(),
             origin: this,
-            visited: [this],
+            visited: [this, bird.from],
         });
         return;
     }
