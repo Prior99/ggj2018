@@ -48,6 +48,8 @@ export class Discovery extends Bird {
 
         if (query) {
             this.sprite.tint = 0xFF0000;
+        } else {
+            this.sprite.tint = 0xFFFFFF;
         }
     }
 
