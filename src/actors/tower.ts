@@ -15,7 +15,7 @@ export abstract class Tower {
 
     protected pos: Victor;
 
-    protected sprite: Sprite;
+    public sprite: Sprite;
     public birds: Bird[];
     public seatingOffsets: {x: number, y: number}[];
 

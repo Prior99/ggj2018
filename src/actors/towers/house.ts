@@ -56,6 +56,7 @@ export class House extends Tower {
         if (bird instanceof Discovery) {
             const { query } = bird;
             if (query && query.target === this) {
+                query.fulfilledVia = this;
                 return query.origin;
             }
         }

@@ -1,6 +1,6 @@
 import Victor = require("victor");
 import { external, inject, initialize } from "tsdi";
-import { Sprite, Animation, Game } from "phaser-ce";
+import { Sprite, Animation, Game, Line } from "phaser-ce";
 import { Bird } from "../bird";
 import { Package } from "../package";
 import { Tower } from "../tower";
@@ -8,6 +8,8 @@ import { Query } from "../towers/router";
 
 @external
 export class Discovery  extends Bird {
+    @inject protected game: Game;
+
     // Might be undefined. If defined, the bird has been given the mission to find a route.
     public query: Query;
     private discoveryStart: Tower;
@@ -54,5 +56,24 @@ export class Discovery  extends Bird {
         }
         this.badTargets.push(this.target);
         this.selectRandomTarget();
+    }
+
+    public render() {
+        if (!(window as any).DEBUG_ROUTING) { return; }
+        if (!this.query) {
+            return;
+        }
+        const { origin, target } = this.query;
+
+        const originLine = new Line(this.pos.x, this.pos.y, origin.position.x, origin.position.y);
+        this.game.debug.geom(originLine, "rgb(0, 255, 0)");
+
+        const targetLine = new Line(this.pos.x, this.pos.y, target.position.x, target.position.y);
+        this.game.debug.geom(targetLine, "rgb(255, 0, 0)");
+
+        if (this.target) {
+            const currentLine = new Line(this.pos.x, this.pos.y, this.target.position.x, this.target.position.y);
+            this.game.debug.geom(currentLine, "rgb(0, 0, 255)");
+        }
     }
 }

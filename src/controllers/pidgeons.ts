@@ -52,4 +52,8 @@ export class Pidgeons implements Controller {
         this.pidgeons = alive;
         this.pidgeons.map(bird => bird.update(dt));
     }
+
+    public render() {
+        this.pidgeons.forEach(bird => bird.render());
+    }
 }

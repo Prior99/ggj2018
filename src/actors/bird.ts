@@ -9,7 +9,7 @@ import { Tower } from "./tower";
 import { Package } from "./package";
 
 const fps = 10;
-const acceleration = 50;
+const acceleration = 70;
 const speed = 50;
 
 function normalizeDeg(deg: number) {
@@ -162,7 +162,7 @@ export abstract class Bird {
 
             const target = this.target;
             const targetPosition = target.position;
-            if (targetPosition.subtract(this.pos).length() < 20) { // TODO: CHANGE BACK TO 10
+            if (targetPosition.subtract(this.pos).length() < 10) {
                 // Bird reached its target. Initiate landing...
                 const landPosition = this.target.land(this);
                 if (landPosition) {
@@ -203,6 +203,10 @@ export abstract class Bird {
 
     public die() {
         this.sprite.destroy();
+    }
+
+    public render() {
+        return;
     }
 
     // public get target() {

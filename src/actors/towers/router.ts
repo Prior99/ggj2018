@@ -94,6 +94,7 @@ export class Router extends Tower {
             const timedOut = query.active.reduce((result: Active[], active) => {
                 if ((now - active.when.getTime()) / 1000 > ROUTING_TIMEOUT) {
                     result.push(active);
+                    delete active.bird.query;
                 }
                 return result;
             }, []);
@@ -141,11 +142,14 @@ export class Router extends Tower {
         if (query) {
             const success = Boolean(query.fulfilledVia);
             const failure = Boolean(this.possibleTargets.every(target => query.failed.includes(target)));
+            if (this.routingTable.has(query.target) && !query.fulfilledVia) {
+                query.fulfilledVia = this;
+            }
             // If the query was successfull (Note that it has been given to other birds as a reference),
             // or failed (= all neighbours have been tested and non had a route to the target), send
             // the bird back to the origin of the query to report back. The reporting happens when the
             // bird docks to the router.
-            if (success || failure) {
+            if (success || failure || this.routingTable.has(query.target)) {
                 return query.origin;
             }
             // If neither success nor failure have been determined yet, the bird needs to wait for subsequent
