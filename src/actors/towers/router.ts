@@ -245,9 +245,9 @@ export class Router extends Tower {
         if (parent && query.origin === this) {
             delete bird.query;
             if (query.fulfilledVia) {
-                parent.fulfilledVia = bird.from;
+                parent.fulfilledVia = this;
                 this.routingTable.set(query.target, { used: 0, via: bird.from });
-                this.activeQueries = this.activeQueries.filter(active => active !== parent);
+                this.activeQueries = this.activeQueries.filter(active => active !== query);
             } else {
                 query.failed.push(bird.from);
                 query.active.filter(current => current.to !== bird.from);
