@@ -10,13 +10,15 @@ export class Houses implements Controller {
 
     public houses: House[] = [];
 
-    @initialize
+    // @initialize
     public init() {
         this.addHouse(new House(new Victor(-100, 0)));
         this.addHouse(new House(new Victor(150, -150)));
 
-        this.houses[0].addTarget(this.towers.towers[0]);
-        this.houses[1].addTarget(this.towers.towers[5]);
+        // this.houses[0].addTarget(this.towers.towers[0]);
+        // this.houses[1].addTarget(this.towers.towers[5]);
+        // this.towers.towers[0].addTarget(this.houses[0]);
+        // this.towers.towers[5].addTarget(this.houses[1]);
     }
 
     private addHouse(house: House) {

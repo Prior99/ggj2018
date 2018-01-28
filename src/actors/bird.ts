@@ -23,6 +23,8 @@ export abstract class Bird {
     @inject private layers: Layers;
     @inject("Towers") private towers: Towers;
 
+    public timeOfDeath: number;
+
     public pos: Victor;
     private velocity: Victor;
 
@@ -64,6 +66,9 @@ export abstract class Bird {
         this.sprite.anchor.y = 0.5;
         this.sprite.inputEnabled = true;
         this.sprite.events.onInputOver.add(() => console.log(this));
+        this.sprite.events.onInputDown.add(() => {
+            this.timeOfDeath = this.game.time.time / 1000;
+        });
 
         this.layers.sky.add(this.sprite);
 
@@ -160,7 +165,7 @@ export abstract class Bird {
                 if (landPosition) {
                     // Drop list list of bad towers and the target also.
                     this.badTargets = [];
-                    this.landedOn(this.target)
+                    this.landedOn(this.target);
                     this.target = undefined;
                     this.velocity = new Victor(0, 0);
 
@@ -193,6 +198,25 @@ export abstract class Bird {
         this.sprite.x = this.pos.x;
         this.sprite.y = this.pos.y;
     }
+
+    public die() {
+        this.sprite.destroy();
+    }
+
+    // public get target() {
+    //     const { allActive } = this.towers;
+    //     if (allActive.length === 0) {
+    //         return;
+    //     }
+    //     return allActive.reduce((result, current) => {
+    //         const distanceCurrent = this.pos.clone().distance(current.pos);
+    //         const distanceOld = this.pos.clone().distance(result.pos);
+    //         if (distanceCurrent > distanceOld) {
+    //             return current;
+    //         }
+    //         return result;
+    //     }).pos;
+    // }
 
     public abstract tryAttachPackage(pack: Package): boolean;
     public abstract landedOn(target: Tower): void;

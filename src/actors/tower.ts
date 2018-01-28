@@ -155,12 +155,12 @@ export abstract class Tower {
                     this.sendBirdAway(bird);
                 }
             }
+            this.birds = this.birds.map((b) => b && (b.target || b.timeOfDeath) ? undefined : b);
         });
-        this.birds = this.birds.map((bird) => bird && bird.target ? undefined : bird);
     }
 
     protected sendBirdAway(bird: Bird) {
-        return;
+        bird.startFlapping();
     }
 
     protected docked(bird: Bird) {

@@ -8,6 +8,7 @@ import { GhostTower } from "../actors/ghost-tower";
 import { SimpleTower } from "../actors/towers/simple-tower";
 import { Controller } from "../controller";
 import { Router } from "../actors/towers/router";
+import { Houses } from "./houses";
 
 @component("Towers")
 export class Towers implements Controller {
@@ -22,6 +23,7 @@ export class Towers implements Controller {
 
     @initialize
     public init() {
+        this.houses.init();
         //                                   -- H1
         //                                  /
         //              -- T1 --- T2 --- T5 --- T6
@@ -59,6 +61,9 @@ export class Towers implements Controller {
         this.towers[5].addTarget(this.towers[6]);
         this.towers[7].addTarget(this.towers[8]);
         this.towers[7].addTarget(this.towers[9]);
+
+        this.houses.houses[0].addTarget(this.towers[0]);
+        this.houses.houses[1].addTarget(this.towers[5]);
     }
 
     public addTower(tower: Tower) {
