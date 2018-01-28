@@ -7,6 +7,7 @@ import { Controller } from "../controller";
 import { Sprite, Game, Particles } from "phaser-ce";
 
 import { MAX_BIRDS, INITIAL_BIRDS, CARRIER_CHANCE } from "../const";
+import { Query } from "../actors/towers/router";
 
 @component("Pidgeons")
 export class Pidgeons implements Controller {
@@ -62,6 +63,16 @@ export class Pidgeons implements Controller {
         }
 
         this.pidgeons.map(bird => bird.update(dt));
+    }
+
+    public cancelQuery(query: Query) {
+        this.pidgeons.forEach(bird => {
+            if (bird instanceof Discovery) {
+                if (bird.query  === query) {
+                    delete bird.query;
+                }
+            }
+        });
     }
 
     public render() {

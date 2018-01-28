@@ -10,6 +10,7 @@ import { House } from "./house";
 import { ROUTING_TIMEOUT } from "../../const";
 
 import { TowerType } from "../../utils/tower";
+import { Pidgeons } from "../../controllers/pidgeons";
 
 export interface Route {
     via: Tower;
@@ -58,6 +59,8 @@ export interface Query {
 
 @external
 export class Router extends Tower {
+    @inject("Pidgeons") private pidgeons: Pidgeons;
+
     private animations: {
         default: Animation;
     };
@@ -254,6 +257,7 @@ export class Router extends Tower {
 
                 this.routingTable.set(query.target, { used: 0, via: bird.from });
                 this.activeQueries = this.activeQueries.filter(active => active !== query);
+                this.pidgeons.cancelQuery(query);
             } else {
                 query.failed.push(bird.from);
                 query.active.filter(current => current.to !== bird.from);
