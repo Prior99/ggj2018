@@ -3,10 +3,14 @@ import { component, inject, initialize } from "tsdi";
 import { Sprite, Game } from "phaser-ce";
 import Victor = require("victor");
 
+import { TOWER_VALUE } from "../const";
+
+import { Controller } from "../controller";
+import { Money } from "./money";
+
 import { Tower } from "../actors/tower";
 import { GhostTower } from "../actors/ghost-tower";
 import { SimpleTower } from "../actors/towers/simple-tower";
-import { Controller } from "../controller";
 import { Router } from "../actors/towers/router";
 import { Houses } from "./houses";
 
@@ -14,10 +18,10 @@ import { Houses } from "./houses";
 export class Towers implements Controller {
     @inject private game: Game;
     @inject("Houses") private houses: Houses;
+    @inject private money: Money;
 
     public towers: Tower[] = [];
     private ghost: GhostTower;
-    private selected: Tower;
 
     private changed: boolean;
 
@@ -82,14 +86,20 @@ export class Towers implements Controller {
         this.towers.forEach(tower => tower.render());
     }
 
-    public spawnGhost(initialX: number, initialY: number, type = "simple") {
+    public spawnGhost(initialX: number, initialY: number, type = "simple", callback: () => void) {
+        if (this.ghost) {
+            this.ghost.destroy();
+        }
+
         let spriteName: string;
         let spawnFn: (pos: Victor) => Tower;
+        let value: number;
 
         switch (type) {
             case "simple":
                 spriteName = "tower";
                 spawnFn = (pos: Victor) => new SimpleTower(pos);
+                value = TOWER_VALUE.SIMPLE;
                 break;
             default:
                 return;
@@ -99,26 +109,23 @@ export class Towers implements Controller {
             new Victor(initialX, initialY),
             spriteName,
             (x: number, y: number) => {
-                this.towers.push(spawnFn(new Victor(x, y)));
-                this.ghost = undefined;
+                if (this.money.buy(value)) {
+                    this.towers.push(spawnFn(new Victor(x, y)));
+                    this.ghost = undefined;
+
+                    callback();
+
+                    return true;
+                }
+
+                return false;
             },
         );
     }
 
-    public select(tower: Tower) {
-        if (this.selected) {
-            this.selected.selected = false;
-        }
-
-        tower.selected = true;
-        this.selected = tower;
-    }
-
-    public deselect() {
-        if (this.selected) {
-            this.selected.selected = false;
-            this.selected = undefined;
-        }
+    public removeGhost() {
+        this.ghost.destroy();
+        this.ghost = undefined;
     }
 
     public get allActive() { return this.towers; }

@@ -4,6 +4,8 @@ import { RandomSeed, create as gen } from "random-seed";
 import { Game, Sprite, Animation } from "phaser-ce";
 import { WEED_CHANCE, TILE_SIZE } from "./const";
 
+import { onLeftClick } from "./utils/click";
+
 @external
 export class Tile {
     @inject private game: Game;
@@ -17,7 +19,7 @@ export class Tile {
         weed?: Animation;
     };
 
-    private onClick: () => void
+    private onClick: () => void;
 
     constructor(pos: Victor, onClick?: () => void) {
         this.gridPos = pos;
@@ -32,8 +34,7 @@ export class Tile {
         this.grass = this.game.add.sprite(this.pos.x, this.pos.y, "grass");
 
         if (this.onClick) {
-            this.grass.inputEnabled = true;
-            this.grass.events.onInputUp.add(this.onClick);
+            onLeftClick(this.grass, this.onClick);
         }
 
         this.animations = {

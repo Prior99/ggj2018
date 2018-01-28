@@ -3,7 +3,7 @@ import { bind } from "decko";
 import { Game } from "phaser-ce";
 import Victor = require("victor");
 
-import { Towers } from "./controllers/towers";
+import { ConnectionHandler } from "./behaviour/connect";
 import { Tile } from "./tile";
 
 function toKey(pos: Victor) {
@@ -13,7 +13,7 @@ function toKey(pos: Victor) {
 @component
 export class World {
     @inject private game: Game;
-    @inject private towerController: Towers;
+    @inject private connected: ConnectionHandler;
 
     private tiles = new Map<string, Tile>();
 
@@ -39,6 +39,6 @@ export class World {
 
     @bind
     private onClick() {
-        this.towerController.deselect();
+        this.connected.deselect();
     }
 }

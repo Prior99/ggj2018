@@ -1,9 +1,11 @@
 import { external, inject, initialize } from "tsdi";
-import { Game, Line, Sprite } from "phaser-ce";
+import { bind } from "decko";
+import { Game, Line, Sprite, Pointer } from "phaser-ce";
 import Victor = require("victor");
 
 import { REST_STAMINA_PER_SECOND } from "../const";
 import { Layers } from "../layers";
+import { ConnectionHandler } from "../behaviour/connect";
 import { Towers } from "../controllers/towers";
 import { Bird } from "./bird";
 import { Arrow } from "../ui/arrow";
@@ -11,6 +13,7 @@ import { Arrow } from "../ui/arrow";
 export abstract class Tower {
     @inject protected game: Game;
     @inject private layers: Layers;
+    @inject("Connector") private connector: ConnectionHandler;
     @inject("Towers") private towerController: Towers;
 
     protected pos: Victor;
@@ -21,6 +24,7 @@ export abstract class Tower {
 
     protected possibleTargets: Tower[] = [];
     private connectionSprites: Arrow[] = [];
+    private selected = false;
 
     private warning: Sprite;
 
@@ -42,29 +46,36 @@ export abstract class Tower {
         this.init();
 
         this.sprite.anchor.setTo(0.5, 0.5);
-
-        const button = this.game.add.button(
-            this.pos.x, this.pos.y, undefined, this.onSelect, this, 0, 0, 0, 0, this.layers.ground,
-        );
-        button.anchor.setTo(0.5, 0.5);
-        button.addChild(this.sprite);
+        this.sprite.position.setTo(this.pos.x, this.pos.y);
+        this.layers.ground.add(this.sprite);
 
         this.checkHasTargets();
+
+        this.connector.setupConnectionHandling(this);
     }
 
-    private onSelect() {
-        this.towerController.select(this);
+    public get drawable() {
+        return this.sprite;
     }
 
-    public set selected(selected: boolean) {
+    public set isSelected(selected: boolean) {
+        this.selected = selected;
         if (selected) {
             this.connectionSprites = this.possibleTargets.map((connection) =>
                 new Arrow(this.position, connection.position),
             );
+
+            this.sprite.tint = 0x44f72c;
         } else {
             this.connectionSprites.forEach((sprite) => sprite.destroy());
             this.connectionSprites = [];
+
+            this.sprite.tint = 0xFFFFFF;
         }
+    }
+
+    public get isSelected() {
+        return this.selected;
     }
 
     protected abstract getTarget(bird: Bird): Tower;
@@ -106,6 +117,9 @@ export abstract class Tower {
     public addTarget(tower: Tower): boolean {
         if (this.canConnect(tower)) {
             this.possibleTargets.push(tower);
+            if (this.selected) {
+                this.connectionSprites.push(new Arrow(this.position, tower.position));
+            }
             this.postConnect(tower);
 
             this.checkHasTargets();
