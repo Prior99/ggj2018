@@ -46,11 +46,11 @@ export class Discovery extends Bird {
     public set query(query: Query) {
         this.q = query;
 
-        if (query) {
-            this.sprite.tint = 0xFF0000;
-        } else {
-            this.sprite.tint = 0xFFFFFF;
-        }
+        // if (query) {
+        //     this.sprite.tint = 0xFF0000;
+        // } else {
+        //     this.sprite.tint = 0xFFFFFF;
+        // }
     }
 
     public get query() {
