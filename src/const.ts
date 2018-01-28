@@ -24,4 +24,8 @@ export const TOWER_VALUE = {
     ROUTER: 5000,
 };
 
+export const TOWER_RANGE = {
+    SIMPLE: 100,
+    ROUTER: 100,
+};
 export const ACCELLERATION_ACCELLERATION_SPEED = 2;

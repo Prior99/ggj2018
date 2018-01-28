@@ -1,4 +1,4 @@
-import { TOWER_VALUE } from "../const";
+import { TOWER_VALUE, TOWER_RANGE } from "../const";
 
 export enum TowerType {
     SIMPLE,
@@ -12,12 +12,14 @@ export function getTowerProps(type: TowerType) {
                 icon: "icon-tower-simple",
                 sprite: "tower",
                 value: TOWER_VALUE.SIMPLE,
+                range: TOWER_RANGE.SIMPLE,
             };
         case TowerType.ROUTER:
             return {
                 icon: "icon-tower-router",
                 sprite: "tower-router",
                 value: TOWER_VALUE.ROUTER,
+                range: TOWER_RANGE.ROUTER,
             };
         default:
     }

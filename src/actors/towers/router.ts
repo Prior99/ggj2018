@@ -9,6 +9,8 @@ import { Carrier } from "../birds/carrier";
 import { House } from "./house";
 import { ROUTING_TIMEOUT } from "../../const";
 
+import { TowerType } from "../../utils/tower";
+
 export interface Route {
     via: Tower;
     used: number;
@@ -80,6 +82,10 @@ export class Router extends Tower {
             ),
         };
         this.animations.default.play(3, true);
+    }
+
+    public get type() {
+        return TowerType.ROUTER;
     }
 
     public update(dt: number) {

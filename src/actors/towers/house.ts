@@ -9,6 +9,8 @@ import { PACKAGE_INTERVAL_VARIETY, PACKAGE_INTERVAL } from "../../const";
 import { Bird } from "../bird";
 import { Discovery } from "../birds/discovery";
 
+import { TowerType } from "../../utils/tower";
+
 @external
 export class House extends Tower {
     @inject private packages: Packages;
@@ -33,6 +35,10 @@ export class House extends Tower {
                 "default", Animation.generateFrameNames("house ", 0, 0, ".ase", 1),
             ),
         };
+    }
+
+    public get type() {
+        return TowerType.SIMPLE;
     }
 
     public update(dt: number) {

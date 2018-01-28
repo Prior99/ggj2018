@@ -11,6 +11,8 @@ import { Money } from "../controllers/money";
 import { Bird } from "./bird";
 import { Arrow } from "../ui/arrow";
 
+import { TowerType, getTowerProps } from "../utils/tower";
+
 export abstract class Tower {
     @inject private money: Money;
     @inject protected game: Game;
@@ -42,6 +44,7 @@ export abstract class Tower {
         this.seatingOffsets = seatingOffsets;
     }
 
+    public abstract get type(): TowerType;
     protected abstract init();
 
     @initialize
@@ -59,6 +62,10 @@ export abstract class Tower {
 
     public get drawable() {
         return this.sprite;
+    }
+
+    public get props() {
+        return getTowerProps(this.type);
     }
 
     public set isSelected(selected: boolean) {

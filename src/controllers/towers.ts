@@ -110,6 +110,7 @@ export class Towers implements Controller {
         this.ghost = new GhostTower(
             new Victor(initialX, initialY),
             props.sprite,
+            props.range,
             (x: number, y: number) => {
                 if (this.money.buy(props.value)) {
                     this.towers.push(spawnFn(new Victor(x, y)));

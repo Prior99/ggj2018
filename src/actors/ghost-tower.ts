@@ -14,12 +14,14 @@ export class GhostTower {
 
     private initialPosition: Victor;
     private spriteName: string;
+    private range: number;
     private ghost: Sprite;
     private spawnFn: (x: number, y: number) => boolean;
 
-    constructor(pos: Victor, spriteName: string, spawnFn: (x: number, y: number) => boolean) {
+    constructor(pos: Victor, spriteName: string, range: number, spawnFn: (x: number, y: number) => boolean) {
         this.initialPosition = pos;
         this.spriteName = spriteName;
+        this.range = range;
         this.spawnFn = spawnFn;
     }
 
@@ -32,6 +34,12 @@ export class GhostTower {
 
         this.ghost.alpha = 0.5;
         this.ghost.anchor.setTo(0.5, 0.5);
+
+        const g = this.game.add.graphics(0, 0);
+        g.lineStyle(3, 0xffd900, 1);
+        g.drawCircle(0, 0, this.range * 2);
+
+        this.ghost.addChild(g);
 
         this.layers.ground.add(this.ghost);
     }
