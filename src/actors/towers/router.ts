@@ -91,6 +91,9 @@ export class Router extends Tower {
     public update(dt: number) {
         super.update(dt);
         this.scrubActiveTimeouts();
+        this.activeQueries = this.activeQueries.filter(activeQuery => {
+            return !this.possibleTargets.every(possible => activeQuery.failed.includes(possible));
+        });
         return;
     }
 
@@ -156,6 +159,10 @@ export class Router extends Tower {
             // the bird back to the origin of the query to report back. The reporting happens when the
             // bird docks to the router.
             if (success || failure || this.routingTable.has(query.target)) {
+                if (query.origin === this) {
+                    delete bird.query;
+                    return this.findRandomTarget();
+                }
                 return query.origin;
             }
             // If neither success nor failure have been determined yet, the bird needs to wait for subsequent
@@ -175,13 +182,9 @@ export class Router extends Tower {
             return !activeTowers.includes(possible) && !nextQuery.failed.includes(possible);
         });
         // If we could not find such a neighbour, this means there is currently nothing to do for this query.
-        // if (!neighbour) {
-        //     if (this.possibleTargets.every(possible => nextQuery.failed.includes(possible))) {
-        //         this.activeQueries = this.activeQueries.filter(active => active !== nextQuery);
-        //         return nextQuery.origin;
-        //     }
-        //     return this.findRandomTarget();
-        // }
+        if (!neighbour) {
+            return this.findRandomTarget();
+        }
         nextQuery.active.push({ when: new Date(), to: neighbour, bird });
         return neighbour;
     }
@@ -263,7 +266,7 @@ export class Router extends Tower {
         }
         this.activeQueries.push({
             parent: query,
-            failed: [],
+            failed: [this, bird.from],
             active: [],
             started: new Date(),
             origin: this,

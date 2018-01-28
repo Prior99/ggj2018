@@ -198,9 +198,6 @@ export abstract class Tower {
             if (bird === undefined) {
                 return;
             }
-            const rechargeAmount = dt * REST_STAMINA_PER_SECOND;
-            bird.stamina += rechargeAmount;
-            this.money.staminaRecharged(rechargeAmount);
 
             if (bird.isRested) {
                 const target = this.getTarget(bird);
@@ -211,6 +208,9 @@ export abstract class Tower {
                     this.sendBirdAway(bird);
                 }
             }
+            const rechargeAmount = dt * REST_STAMINA_PER_SECOND;
+            bird.stamina += rechargeAmount;
+            this.money.staminaRecharged(rechargeAmount);
             this.birds = this.birds.map((b) => b && (b.target || b.timeOfDeath) ? undefined : b);
         });
     }
