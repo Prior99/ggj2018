@@ -25,7 +25,9 @@ export class UI implements Controller {
 
     @initialize
     public init(): void {
-        createAddTowerButton();
+        createAddTowerButton(20, 20, "simple");
+        createAddTowerButton(60, 20, "router");
+
         this.game.input.keyboard.addKey(Keyboard.X).onDown.add(() => {
             if (this.focusedBird) {
                 this.focusedBird.kill();

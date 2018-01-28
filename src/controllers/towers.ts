@@ -124,7 +124,9 @@ export class Towers implements Controller {
     }
 
     public removeGhost() {
-        this.ghost.destroy();
+        if (this.ghost) {
+            this.ghost.destroy();
+        }
         this.ghost = undefined;
     }
 

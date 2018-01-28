@@ -14,7 +14,7 @@ const style = { font: "8px Arial", fill: "#FFFFFF" };
 class AddTowerButton {
     @inject private game: Game;
     @inject private layers: Layers;
-    @inject private towerController: Towers;
+    @inject("Towers") private towerController: Towers;
 
     private button: Sprite;
     private buyMode = false;
