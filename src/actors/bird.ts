@@ -115,28 +115,12 @@ export abstract class Bird {
     protected selectRandomTarget() {
         const { towers, badTargets, pos } = this;
         // Radius search nearest free tower which is not in the list.
-        const { closestDistance, bestTower } = towers.allActive.reduce(
-            (oldBest, tower) => {
-                const distance = tower.position.subtract(pos).length();
-                // Must not be in `badTargets`.
-                if (
-                    distance < oldBest.closestDistance &&
-                    badTargets.every((badTarget) => badTarget !== tower) &&
-                    (Math.random() < 0.6 || !oldBest.bestTower)
-                ) {
-                    return {
-                        closestDistance: distance,
-                        bestTower: tower,
-                    };
-                }
-                return oldBest;
-            },
-            { closestDistance: 1.0 / 0.0, bestTower: undefined },
-        );
-        if (!Boolean(bestTower)) {
+        const possibleTowers = towers.allActive.filter(tower => !badTargets.some(bad => bad === tower));
+        const bestTower = possibleTowers[Math.floor(Math.random() * possibleTowers.length)];
+        if (!bestTower) {
             this.badTargets = [];
             // Use random
-            this.target = towers.allActive[0];
+            this.target = towers.allActive[Math.floor(Math.random() * towers.allActive.length)];
         } else {
             this.target = bestTower;
         }
