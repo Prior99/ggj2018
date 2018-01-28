@@ -24,6 +24,7 @@ export abstract class Tower {
 
     protected possibleTargets: Tower[] = [];
     private connectionSprites: Arrow[] = [];
+    private selected = false;
 
     private warning: Sprite;
 
@@ -57,15 +58,24 @@ export abstract class Tower {
         return this.sprite;
     }
 
-    public set selected(selected: boolean) {
+    public set isSelected(selected: boolean) {
+        this.selected = selected;
         if (selected) {
             this.connectionSprites = this.possibleTargets.map((connection) =>
                 new Arrow(this.position, connection.position),
             );
+
+            this.sprite.tint = 0x44f72c;
         } else {
             this.connectionSprites.forEach((sprite) => sprite.destroy());
             this.connectionSprites = [];
+
+            this.sprite.tint = 0xFFFFFF;
         }
+    }
+
+    public get isSelected() {
+        return this.selected;
     }
 
     protected abstract getTarget(bird: Bird): Tower;
@@ -106,6 +116,9 @@ export abstract class Tower {
     public addTarget(tower: Tower): boolean {
         if (this.canConnect(tower)) {
             this.possibleTargets.push(tower);
+            if (this.selected) {
+                this.connectionSprites.push(new Arrow(this.position, tower.position));
+            }
             this.postConnect(tower);
 
             this.checkHasTargets();

@@ -26,16 +26,16 @@ export class ConnectionHandler {
 
     public select(tower: Tower) {
         if (this.selected) {
-            this.selected.selected = false;
+            this.selected.isSelected = false;
         }
 
-        tower.selected = true;
+        tower.isSelected = true;
         this.selected = tower;
     }
 
     public deselect() {
         if (this.selected) {
-            this.selected.selected = false;
+            this.selected.isSelected = false;
             this.selected = undefined;
         }
     }
