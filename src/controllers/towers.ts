@@ -15,7 +15,7 @@ export class Towers implements Controller {
 
     private towers: Tower[] = [];
     private ghost: GhostTower;
-    private selected: Tower;
+    public selected: Tower;
 
     private changed: boolean;
 

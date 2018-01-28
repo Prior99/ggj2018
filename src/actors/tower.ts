@@ -1,9 +1,11 @@
 import { external, inject, initialize } from "tsdi";
-import { Game, Line, Sprite } from "phaser-ce";
+import { bind } from "decko";
+import { Game, Line, Sprite, Pointer } from "phaser-ce";
 import Victor = require("victor");
 
 import { REST_STAMINA_PER_SECOND } from "../const";
 import { Layers } from "../layers";
+import { ConnectionHandler } from "../behaviour/connect";
 import { Towers } from "../controllers/towers";
 import { Bird } from "./bird";
 import { Arrow } from "../ui/arrow";
@@ -11,6 +13,7 @@ import { Arrow } from "../ui/arrow";
 export abstract class Tower {
     @inject protected game: Game;
     @inject private layers: Layers;
+    @inject("Connector") private connector: ConnectionHandler;
     @inject("Towers") private towerController: Towers;
 
     protected pos: Victor;
@@ -42,18 +45,40 @@ export abstract class Tower {
         this.init();
 
         this.sprite.anchor.setTo(0.5, 0.5);
+        this.sprite.position.setTo(this.pos.x, this.pos.y);
+        this.layers.ground.add(this.sprite);
 
-        const button = this.game.add.button(
-            this.pos.x, this.pos.y, undefined, this.onSelect, this, 0, 0, 0, 0, this.layers.ground,
-        );
-        button.anchor.setTo(0.5, 0.5);
-        button.addChild(this.sprite);
+        // const button = this.game.add.button(
+        //     this.pos.x, this.pos.y, undefined, this.onSelect, this, 0, 0, 0, 0, this.layers.ground,
+        // );
+        this.sprite.inputEnabled = true;
+        this.sprite.events.onInputDown.add(this.down);
+        this.sprite.events.onInputUp.add(this.onSelect);
+
+        // this.sprite.anchor.setTo(0.5, 0.5);
+        // button.addChild(this.sprite);
 
         this.checkHasTargets();
+
+        this.connector.setupConnectionHandling(this);
     }
 
-    private onSelect() {
-        this.towerController.select(this);
+    private isLeftClick = undefined;
+    @bind
+    private down(_, pointer: Pointer) {
+        this.isLeftClick = pointer.leftButton.isDown;
+    }
+
+    @bind
+    private onSelect(button: any, pointer: any) {
+        if (this.isLeftClick) {
+            this.towerController.select(this);
+        }
+        this.isLeftClick = undefined;
+    }
+
+    public get drawable() {
+        return this.sprite;
     }
 
     public set selected(selected: boolean) {

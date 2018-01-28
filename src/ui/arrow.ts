@@ -40,6 +40,9 @@ export class Arrow {
 
         const measurements = this.getMeasures();
 
+        this.sprite.width = measurements.length;
+        this.sprite.rotation = measurements.rotation;
+        this.sprite.position.setTo(to.x, to.y);
     }
 
     private getMeasures() {
