@@ -155,7 +155,7 @@ export abstract class Tower {
         });
     }
 
-    public sendBirdAway(bird: Bird, target: Tower) {
+    protected sendBirdAway(bird: Bird, target: Tower) {
         bird.target = target;
         bird.startFlapping();
     }
