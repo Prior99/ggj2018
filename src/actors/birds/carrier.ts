@@ -55,4 +55,9 @@ export class Carrier extends Bird {
             delete this.freight;
         }
     }
+
+    public handleLandingDenied() {
+        this.badTargets.push(this.target);
+        this.selectRandomTarget();
+    }
 }

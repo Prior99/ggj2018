@@ -8,6 +8,7 @@ import { Query } from "../towers/router";
 
 @external
 export class Discovery  extends Bird {
+    // Might be undefined. If defined, the bird has been given the mission to find a route.
     public query: Query;
     private discoveryStart: Tower;
 
@@ -45,5 +46,13 @@ export class Discovery  extends Bird {
 
     public landedOn(tower: Tower) {
         return;
+    }
+
+    public handleLandingDenied() {
+        if (this.query) {
+            return;
+        }
+        this.badTargets.push(this.target);
+        this.selectRandomTarget();
     }
 }

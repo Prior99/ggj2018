@@ -15,3 +15,5 @@ export const PACKAGE_INTERVAL_VARIETY = 5;
 
 export const INITIAL_MONEY = 100;
 export const MONEY_PER_PACKAGE = 2;
+
+export const ROUTING_TIMEOUT = 60;

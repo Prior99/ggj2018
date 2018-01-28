@@ -6,21 +6,52 @@ import { Tower } from "../tower";
 import { Bird } from "../bird";
 import { Discovery } from "../birds/discovery";
 import { Carrier } from "../birds/carrier";
+import { House } from "./house";
+import { ROUTING_TIMEOUT } from "../../const";
 
 export interface Route {
     via: Tower;
     used: number;
 }
 
+export interface Active {
+    when: Date;
+    to: Tower;
+    bird: Discovery;
+}
+
 export interface Query {
-    target: Tower;
+    /**
+     * The final house the original router has been looking for.
+     */
+    target: House;
+    /**
+     * All immediate neighboruing towers which have been visited already from this router
+     * and of which the discovery birds have returned and reported that
+     * this tower does not lead to the requested target.
+     */
     failed: Tower[];
-    active: Tower[];
+    /**
+     * All immediate neighbouring towers to which discovery birds have beeen sent, but which
+     * have not yet returned.
+     */
+    active: Active[];
     started: Date;
-    origin: Tower;
+    /**
+     * The immediate router (not the overall original router which started the routing) which
+     * created this exact query.
+     */
+    origin: Router;
+    /**
+     * Queries are chained. This is the parenting query. Go down to the chain of `query.parent`
+     * and you will reach the original router which initiated the routing.
+     */
     parent?: Query;
+    /**
+     * If a child query or even this query reached the final target of the routing,
+     * then this property will carry the immediate neighbour which lead to finding the final target.
+     */
     fulfilledVia?: Tower;
-    allFailed?: boolean;
 }
 
 @external
@@ -30,6 +61,10 @@ export class Router extends Tower {
     };
 
     private routingTable = new Map<Tower, Route>();
+    /**
+     * Contains all queries which are currently in progress. These were all initiated by this exact router.
+     * In progress means no target has been found yet.
+     */
     private activeQueries: Query[] = [];
 
     constructor(pos: Victor, capacity = 4) {
@@ -49,53 +84,96 @@ export class Router extends Tower {
 
     public update(dt: number) {
         super.update(dt);
+        this.scrubActiveTimeouts();
         return;
+    }
+
+    private scrubActiveTimeouts() {
+        const now = Date.now();
+        this.activeQueries.forEach(query => {
+            const timedOut = query.active.reduce((result: Active[], active) => {
+                if ((now - active.when.getTime()) / 1000 > ROUTING_TIMEOUT) {
+                    result.push(active);
+                }
+                return result;
+            }, []);
+            query.active = query.active.filter(current => !timedOut.includes(current));
+            query.failed.push(...timedOut.map(active => active.to));
+        });
     }
 
     public canConnect(target: Tower): boolean {
         return true;
     }
 
-    private get oldestActiveQuery() {
-        return this.activeQueries.reduce((result, query) => {
-            if (!result) {
+    private get oldestActiveQueryNotAllBusy() {
+        return this.activeQueries
+            // Ignore all queries where all of this routers neighbours have either failed or are currently active.
+            .filter(query => {
+                const { failed, active } = query;
+                const activeTowers = active.map(pair => pair.to);
+                return this.possibleTargets.some(possible =>
+                    !failed.includes(possible) && !activeTowers.includes(possible),
+                );
+            })
+            // Of the remaining queries, return the oldest one, or `undefined`.
+            .reduce((result, query) => {
+                if (!result) {
+                    return query;
+                }
+                if (result.started < query.started) {
+                    return result;
+                }
                 return query;
-            }
-            if (result.started < query.started) {
-                return result;
-            }
-            return query;
-        }, undefined);
+            }, undefined);
     }
 
+    /**
+     * Called when a bird wants to take of and is a discovery bird.
+     * Called by `getTarget`.
+     */
     private findDiscoveryTarget(bird: Discovery): Tower {
         const { query } = bird;
+        // If the bird is already on a mission and wants to take off,
+        // then it needs some time to be on it's way back. As discovery birds
+        // always just go one step in the network ahead, initiate a new routing process
+        // and report back to the router they were sent by.
         if (query) {
-            if (query.fulfilledVia) {
+            const success = Boolean(query.fulfilledVia);
+            const failure = Boolean(this.possibleTargets.every(target => query.failed.includes(target)));
+            // If the query was successfull (Note that it has been given to other birds as a reference),
+            // or failed (= all neighbours have been tested and non had a route to the target), send
+            // the bird back to the origin of the query to report back. The reporting happens when the
+            // bird docks to the router.
+            if (success || failure) {
                 return query.origin;
             }
-            if (this.possibleTargets.every(target => query.failed.includes(target))) {
-                return query.origin;
-            }
+            // If neither success nor failure have been determined yet, the bird needs to wait for subsequent
+            // queries initiated by this router.
             return;
         }
-        if (this.activeQueries.length === 0) {
+        // If the bird was not yet on a mission and no queries are currently active and not completely busy,
+        // just send that bird away.
+        const { oldestActiveQueryNotAllBusy: nextQuery } = this;
+        if (!nextQuery) {
             return this.findRandomTarget();
         }
-        const { oldestActiveQuery } = this;
-        const via = this.possibleTargets.find(possible => {
-            return !oldestActiveQuery.active.includes(possible) && !oldestActiveQuery.failed.includes(possible);
+        bird.query = nextQuery;
+        const activeTowers = nextQuery.active.map(pair => pair.to);
+        // Find a neighbour to which no discovery bird has been sent yet.
+        const neighbour = this.possibleTargets.find(possible => {
+            return !activeTowers.includes(possible) && !nextQuery.failed.includes(possible);
         });
-        bird.query = oldestActiveQuery;
-        if (!via) {
-            if (this.possibleTargets.every(possible => oldestActiveQuery.failed.includes(possible))) {
-                this.activeQueries = this.activeQueries.filter(active => active !== oldestActiveQuery);
-                return oldestActiveQuery.origin;
-            }
-            return this.findRandomTarget();
-        }
-        oldestActiveQuery.active.push(via);
-        return via;
+        // If we could not find such a neighbour, this means there is currently nothing to do for this query.
+        // if (!neighbour) {
+        //     if (this.possibleTargets.every(possible => nextQuery.failed.includes(possible))) {
+        //         this.activeQueries = this.activeQueries.filter(active => active !== nextQuery);
+        //         return nextQuery.origin;
+        //     }
+        //     return this.findRandomTarget();
+        // }
+        nextQuery.active.push({ when: new Date(), to: neighbour, bird });
+        return neighbour;
     }
 
     private findCarrierTarget(bird: Carrier): Tower {
@@ -138,24 +216,30 @@ export class Router extends Tower {
         return;
     }
 
+    /**
+     * Called when an incoming bird got a seat on the perch for sure and docked to this tower.
+     */
     protected docked(bird: Bird) {
+        // Nothing to do for carriers.
         if (!(bird instanceof Discovery)) {
             return;
         }
         const { query } = bird;
+        // If the bird isn't on a mission from another router, ignore it.
         if (!query) {
             return;
         }
-        delete bird.query;
+        // The parent of the query is the last step of the query chain.
         const { parent } = query;
-        if (parent && parent.origin === this) {
+        if (parent && query.origin === this) {
+            delete bird.query;
             if (query.fulfilledVia) {
-                parent.fulfilledVia = query.origin;
-                this.routingTable.set(parent.target, { used: 0, via: query.origin });
+                parent.fulfilledVia = bird.from;
+                this.routingTable.set(query.target, { used: 0, via: bird.from });
                 this.activeQueries = this.activeQueries.filter(active => active !== parent);
             } else {
                 parent.failed.push(query.origin);
-                parent.active.filter(current => current !== query.origin);
+                parent.active.filter(current => current.to !== query.origin);
             }
             return;
         }

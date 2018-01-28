@@ -36,7 +36,7 @@ export abstract class Bird {
 
     // Managed by `Bird`.
     public target: Tower;
-    private badTargets: Tower[];
+    protected badTargets: Tower[];
 
     private current = false;
 
@@ -49,6 +49,8 @@ export abstract class Bird {
         head2: Animation;
         wing: Animation;
     };
+
+    public from: Tower;
 
     constructor(pos: Victor) {
         this.pos = pos;
@@ -119,7 +121,7 @@ export abstract class Bird {
         }
     }
 
-    private selectRandomTarget() {
+    protected selectRandomTarget() {
         const { towers, badTargets, pos } = this;
         // Radius search nearest free tower which is not in the list.
         const { closestDistance, bestTower } = towers.allActive.reduce(
@@ -127,8 +129,9 @@ export abstract class Bird {
                 const distance = tower.position.subtract(pos).length();
                 // Must not be in `badTargets`.
                 if (
-                    distance < oldBest.closestDistance
-                    && badTargets.every((badTarget) => badTarget !== tower)
+                    distance < oldBest.closestDistance &&
+                    badTargets.every((badTarget) => badTarget !== tower) &&
+                    (Math.random() < 0.6 || !oldBest.bestTower)
                 ) {
                     return {
                         closestDistance: distance,
@@ -159,7 +162,7 @@ export abstract class Bird {
 
             const target = this.target;
             const targetPosition = target.position;
-            if (targetPosition.subtract(this.pos).length() < 10) {
+            if (targetPosition.subtract(this.pos).length() < 20) { // TODO: CHANGE BACK TO 10
                 // Bird reached its target. Initiate landing...
                 const landPosition = this.target.land(this);
                 if (landPosition) {
@@ -173,8 +176,7 @@ export abstract class Bird {
                     this.sprite.angle = 0;
                 } else {
                     // Push the tower to list of tested towers. (To not oscillate between towers)
-                    this.badTargets.push(this.target);
-                    this.selectRandomTarget();
+                    this.handleLandingDenied();
                 }
             }
             if (target.birds.every(bird => bird !== this) && !Boolean(this.target)) {
@@ -220,4 +222,5 @@ export abstract class Bird {
 
     public abstract tryAttachPackage(pack: Package): boolean;
     public abstract landedOn(target: Tower): void;
+    public abstract handleLandingDenied(): void;
 }

@@ -15,12 +15,12 @@ export class Pidgeons implements Controller {
 
     @initialize
     public init() {
-        for (let i = 0; i < 30; ++i) {
+        for (let i = 0; i < 10; ++i) {
             const x = Math.random() * 600 - 300;
             const y = Math.random() * 600 - 300;
             this.pidgeons.push(new Carrier(new Victor(x, y)));
         }
-        for (let i = 0; i < 10; ++i) {
+        for (let i = 0; i < 30; ++i) {
             const x = Math.random() * 600 - 300;
             const y = Math.random() * 600 - 300;
             this.pidgeons.push(new Discovery(new Victor(x, y)));

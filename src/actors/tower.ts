@@ -151,7 +151,9 @@ export abstract class Tower {
             if (bird.isRested) {
                 const target = this.getTarget(bird);
                 if (target) {
+                    bird.target = target;
                     bird.startFlapping();
+                    bird.from = this;
                     this.sendBirdAway(bird);
                 }
             }
@@ -160,7 +162,7 @@ export abstract class Tower {
     }
 
     protected sendBirdAway(bird: Bird) {
-        bird.startFlapping();
+        return;
     }
 
     protected docked(bird: Bird) {

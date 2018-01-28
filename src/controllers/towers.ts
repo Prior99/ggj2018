@@ -23,7 +23,6 @@ export class Towers implements Controller {
 
     @initialize
     public init() {
-        this.houses.init();
         //                                   -- H1
         //                                  /
         //              -- T1 --- T2 --- T5 --- T6
@@ -44,10 +43,11 @@ export class Towers implements Controller {
         this.addTower(new Router(new Victor(150, -100))); // 5
         this.addTower(new SimpleTower(new Victor(225, -100))); // 6
 
-
         this.addTower(new Router(new Victor(150, 100))); // 7
         this.addTower(new SimpleTower(new Victor(225, 50))); // 8
         this.addTower(new SimpleTower(new Victor(225, 150))); // 9
+
+        this.houses.init();
 
         this.towers[0].addTarget(this.towers[1]);
         this.towers[0].addTarget(this.towers[3]);
@@ -63,7 +63,7 @@ export class Towers implements Controller {
         this.towers[7].addTarget(this.towers[9]);
 
         this.houses.houses[0].addTarget(this.towers[0]);
-        this.houses.houses[1].addTarget(this.towers[5]);
+        // this.houses.houses[1].addTarget(this.towers[5]);
     }
 
     public addTower(tower: Tower) {

@@ -4,6 +4,7 @@ import { Sprite, Animation } from "phaser-ce";
 
 import { Tower } from "../tower";
 import { Bird } from "../bird";
+import { Discovery } from "../birds/discovery";
 
 @external
 export class SimpleTower extends Tower {
@@ -31,6 +32,9 @@ export class SimpleTower extends Tower {
     }
 
     protected getTarget(bird: Bird): Tower {
+        if (bird instanceof Discovery && bird.query && this.possibleTargets.length === 0) {
+            return bird.query.origin;
+        }
         return this.possibleTargets[0];
     }
 }

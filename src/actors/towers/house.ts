@@ -7,6 +7,7 @@ import { Package } from "../package";
 import { Tower } from "../tower";
 import { PACKAGE_INTERVAL_VARIETY, PACKAGE_INTERVAL } from "../../const";
 import { Bird } from "../bird";
+import { Discovery } from "../birds/discovery";
 
 @external
 export class House extends Tower {
@@ -52,6 +53,12 @@ export class House extends Tower {
     }
 
     protected getTarget(bird: Bird): Tower {
+        if (bird instanceof Discovery) {
+            const { query } = bird;
+            if (query && query.target === this) {
+                return query.origin;
+            }
+        }
         return this.possibleTargets[0];
     }
     protected sendBirdAway(bird: Bird) {
