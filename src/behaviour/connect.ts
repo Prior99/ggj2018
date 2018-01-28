@@ -12,6 +12,8 @@ export class ConnectionHandler {
     @inject protected game: Game;
     @inject("Towers") private towerController: Towers;
 
+    public selected: Tower;
+
     private currentTarget: Tower;
     private from: Tower;
     private arrow: Arrow;
@@ -22,6 +24,22 @@ export class ConnectionHandler {
         // ?
     }
 
+    public select(tower: Tower) {
+        if (this.selected) {
+            this.selected.selected = false;
+        }
+
+        tower.selected = true;
+        this.selected = tower;
+    }
+
+    public deselect() {
+        if (this.selected) {
+            this.selected.selected = false;
+            this.selected = undefined;
+        }
+    }
+
     public setupConnectionHandling(tower: Tower) {
         const over = () => {
             this.currentTarget = tower;
@@ -29,8 +47,12 @@ export class ConnectionHandler {
         const down = (_, pointer: Pointer) => {
             const isLeftClick = pointer.leftButton.isDown;
 
-            if (isLeftClick && tower === this.towerController.selected) {
-                this.initConnection(tower);
+            if (isLeftClick) {
+                if (!this.selected || this.selected !== tower) {
+                    this.select(tower);
+                } else {
+                    this.initConnection(tower);
+                }
             }
         };
         const up = () => {
@@ -41,11 +63,12 @@ export class ConnectionHandler {
             }
         };
 
-        const button = tower.drawable;
+        const drawable = tower.drawable;
 
-        button.events.onInputDown.add(down);
-        button.events.onInputOver.add(over);
-        button.events.onInputUp.add(up);
+        drawable.inputEnabled = true;
+        drawable.events.onInputDown.add(down);
+        drawable.events.onInputOver.add(over);
+        drawable.events.onInputUp.add(up);
     }
 
     private initConnection(tower: Tower) {

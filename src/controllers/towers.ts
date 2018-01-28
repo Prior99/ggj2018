@@ -15,7 +15,6 @@ export class Towers implements Controller {
 
     private towers: Tower[] = [];
     private ghost: GhostTower;
-    public selected: Tower;
 
     private changed: boolean;
 
@@ -73,22 +72,6 @@ export class Towers implements Controller {
                 this.ghost = undefined;
             },
         );
-    }
-
-    public select(tower: Tower) {
-        if (this.selected) {
-            this.selected.selected = false;
-        }
-
-        tower.selected = true;
-        this.selected = tower;
-    }
-
-    public deselect() {
-        if (this.selected) {
-            this.selected.selected = false;
-            this.selected = undefined;
-        }
     }
 
     public get allActive() { return this.towers; }
