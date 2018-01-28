@@ -35,6 +35,7 @@ export class UI implements Controller {
     }
 
     public focusBird(bird: Bird) {
+        this.clickedRandom();
         this.focusedBird = bird;
         this.focusedChildren = {
             currentText: this.game.add.text(10, this.game.height / 2 - 100, "I am heading here", {
