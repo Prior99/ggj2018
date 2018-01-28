@@ -228,7 +228,7 @@ export abstract class Tower {
             const line = new Line();
             line.fromSprite(this.sprite, conn.sprite);
 
-            this.game.debug.geom(line, "rgba(255, 255, 255, 0.3)");
+            this.game.debug.geom(line, "rgba(120, 255, 120, 0.1)");
         });
     }
 }
