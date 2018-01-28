@@ -21,6 +21,17 @@ export class Money {
         this.text.text = `${this.balance}$`;
     }
 
+    public buy(value: number): boolean {
+        if (this.balance >= value ) {
+            this.money -= value;
+            this.text.text = `${this.balance}$`;
+
+            return true;
+        }
+
+        return false;
+    }
+
     public get balance() {
         return this.money;
     }
