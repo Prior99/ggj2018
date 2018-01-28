@@ -37,8 +37,6 @@ export class StateGame extends State {
 
         this.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;
         this.scale.setUserScale(ZOOM, ZOOM);
-        this.game.renderer.renderSession.roundPixels = true;
-        Phaser.Canvas.setImageRenderingCrisp(this.game.canvas);
         this.game.time.advancedTiming = true;
     }
 

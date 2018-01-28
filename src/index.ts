@@ -9,10 +9,11 @@ import { ZOOM } from "./const";
 export class GGJ2018 extends Phaser.Game {
     constructor(config: Phaser.IGameConfig) {
         super(config);
+        this.state.add("pre-boot", States.StatePreBoot);
         this.state.add("boot", States.StateBoot);
         this.state.add("main-menu", States.StateMainMenu);
         this.state.add("game", States.StateGame);
-        this.state.start("boot");
+        this.state.start("pre-boot");
         this.antialias = false;
     }
 }

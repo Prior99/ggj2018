@@ -1,32 +1,81 @@
 import { State, Animation } from "phaser-ce";
 import { external } from "tsdi";
+import { ZOOM } from "../const";
+
+enum LoadType {
+    ATLAS,
+    IMAGE,
+    AUDIO,
+}
 
 @external
 export class StateBoot extends State {
+    private toLoad: { key: string, baseName: string, type: LoadType, estimatedSize: number }[] = [];
+
+    private get totalSize() {
+        return this.toLoad.reduce((result, { estimatedSize }) => result + estimatedSize, 0);
+    }
+
+    public addResource(key: string, baseName: string, type: LoadType, estimatedSize: number) {
+        this.toLoad.push({ key, baseName, type, estimatedSize });
+    }
+
     public preload() {
-        this.game.load.atlas("pidgeon", "assets/pidgeon.png", "assets/pidgeon.json");
-        this.game.load.atlas("seagull", "assets/seagull.png", "assets/seagull.json");
-        this.game.load.atlas("crow", "assets/crow.png", "assets/crow.json");
+        const container = this.game.add.sprite(this.game.width / 2, this.game.height / 2, "progress-bar-container");
+        const content = this.game.add.sprite(this.game.width / 2, this.game.height / 2, "progress-bar-content");
+        container.anchor.x = 0.5;
+        container.anchor.y = 0.5;
+        content.anchor.x = 0.5;
+        content.anchor.y = 0.5;
 
-        this.game.load.atlas("tower", "assets/tower.png", "assets/tower.json");
-        this.game.load.atlas("tower-router", "assets/tower-router.png", "assets/tower-router.json");
-        this.game.load.atlas("house", "assets/house.png", "assets/house.json");
+        this.addResource("pidgeon", "pidgeon", LoadType.ATLAS, 0.00026);
+        this.addResource("seagull", "seagull", LoadType.ATLAS, 0.000396);
+        this.addResource("crow", "crow", LoadType.ATLAS, 0.000327);
 
-        this.game.load.atlas("grass", "assets/grass.png", "assets/grass.json");
-        this.game.load.atlas("weed", "assets/weed.png", "assets/weed.json");
+        this.addResource("tower", "tower", LoadType.ATLAS, 0.000318);
+        this.addResource("tower-router", "tower-router", LoadType.ATLAS, 0.000308);
+        this.addResource("house", "house", LoadType.ATLAS, 0.000199);
 
-        this.game.load.image("add-tower-button", "assets/tower_add.png");
-        this.game.load.image("feather", "assets/seagull-feather.png");
+        this.addResource("grass", "grass", LoadType.ATLAS, 0.0017);
+        this.addResource("weed", "weed", LoadType.ATLAS, 0.000511);
 
-        this.game.load.atlas("warning", "assets/warning.png", "assets/warning.json");
-        this.game.load.atlas("arrow-shaft", "assets/arrow-shaft.png", "assets/arrow-shaft.json");
-        this.game.load.atlas("arrow-head", "assets/arrow-head.png", "assets/arrow-head.json");
+        this.addResource("add-tower-button", "tower_add", LoadType.IMAGE, 0.000482);
+        this.addResource("feather", "seagull-feather", LoadType.IMAGE, 0.000116);
 
-        this.game.load.audio("song", "sounds/song.wav");
-        this.game.load.atlas("package", "assets/package.png", "assets/package.json");
+        this.addResource("warning", "warning", LoadType.ATLAS, 0.000163);
+        this.addResource("arrow-shaft", "arrow-shaft", LoadType.ATLAS, 0.00012);
+        this.addResource("arrow-head", "arrow-head", LoadType.ATLAS, 0.000153);
 
-        this.game.load.image("progress-bar-container", "assets/progress-bar-container.png");
-        this.game.load.image("progress-bar-content", "assets/progress-bar-content.png");
+        this.addResource("song", "song", LoadType.AUDIO, 5.5);
+        this.addResource("package", "package", LoadType.ATLAS, 0.000129);
+
+        const style = { font: "15px ancient", fill: "#FFFFFF" };
+        const sizeText = `Loading ${this.totalSize.toFixed(2)} MB`;
+        const totalText = this.game.add.text(this.game.width / 2, this.game.height / 2 - 20, sizeText, style);
+        totalText.anchor.x = 0.5;
+        totalText.anchor.y = 1;
+
+        let loaded = 0;
+        this.toLoad.forEach(({ key, baseName, type, estimatedSize }) => {
+            loaded += estimatedSize;
+            switch (type) {
+                case LoadType.ATLAS: {
+                    this.game.load.atlas(key, `assets/${baseName}.png`, `assets/${baseName}.json`);
+                    break;
+                }
+                case LoadType.IMAGE: {
+                    this.game.load.image(key, `assets/${baseName}.png`);
+                    break;
+                }
+                case LoadType.AUDIO: {
+                    this.game.load.audio(key, `sounds/${baseName}.mp3`);
+                    break;
+                }
+                default: break;
+            }
+            content.width = 100 * (loaded / this.totalSize);
+            console.log(`Loading at ${content.width}%`);
+        });
     }
 
     public create() {
