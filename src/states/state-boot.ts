@@ -45,6 +45,10 @@ export class StateBoot extends State {
         this.addResource("warning", "warning", LoadType.ATLAS, 0.000163);
         this.addResource("arrow-shaft", "arrow-shaft", LoadType.ATLAS, 0.00012);
         this.addResource("arrow-head", "arrow-head", LoadType.ATLAS, 0.000153);
+        this.addResource("button", "button", LoadType.IMAGE, 0.0002);
+        this.addResource("icon-coin", "icon-coin", LoadType.IMAGE, 0.0002);
+        this.addResource("icon-add", "icon-add", LoadType.IMAGE, 0.0002);
+        this.addResource("icon-tower-simple", "icon-tower-simple", LoadType.IMAGE, 0.0002);
 
         this.addResource("song", "song", LoadType.AUDIO, 5.5);
         this.addResource("package", "package", LoadType.ATLAS, 0.000129);

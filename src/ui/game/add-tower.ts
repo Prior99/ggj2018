@@ -19,16 +19,33 @@ class AddTowerButton {
     private button: Sprite;
     private buyMode = false;
 
+    private x: number;
+    private y: number;
+    private type: string;
+
+    public constructor(x: number, y: number, type: string) {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+    }
+
     @initialize
     public init() {
-        this.button = this.game.add.sprite(20, 20, "add-tower-button");
+        this.button = this.game.add.sprite(this.x, this.y, "button");
         onLeftClick(this.button, this.click);
         this.button.fixedToCamera = true;
 
         this.layers.ui.add(this.button);
 
-        const text = this.game.add.text(10, 1, `${TOWER_VALUE.SIMPLE}$`, style);
-        this.button.addChild(text);
+        const tower = this.game.add.sprite(7, 8, "icon-tower-simple");
+        const add = this.game.add.sprite(22, 22, "icon-add");
+        const coin = this.game.add.sprite(5, 4, "icon-coin");
+        const cost = this.game.add.text(10, 1, `${TOWER_VALUE.SIMPLE}$`, style);
+
+        this.button.addChild(tower);
+        this.button.addChild(add);
+        this.button.addChild(coin);
+        this.button.addChild(cost);
     }
 
     @bind
@@ -36,13 +53,13 @@ class AddTowerButton {
         this.buyMode = !this.buyMode;
 
         if (this.buyMode) {
-            this.towerController.spawnGhost(20, 20, undefined, () => this.buyMode = false);
+            this.towerController.spawnGhost(this.x, this.y, this.type, () => this.buyMode = false);
         } else {
             this.towerController.removeGhost();
         }
     }
 }
 
-export function createAddTowerButton(): AddTowerButton {
-    return new AddTowerButton();
+export function createAddTowerButton(x = 20, y = 20, type = "simple"): AddTowerButton {
+    return new AddTowerButton(x, y, type);
 }
