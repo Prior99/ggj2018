@@ -1,6 +1,6 @@
 import { component, inject } from "tsdi";
 import Victor = require("victor");
-import { House } from "../actors/house";
+import { House } from "../actors/towers/house";
 import { Controller } from "../controller";
 import { Package } from "../actors/package";
 import { Houses } from "./houses";
@@ -19,5 +19,9 @@ export class Packages implements Controller {
         const pack = new Package(pos, this.houses.randomExcept(house));
         this.packages.push(pack);
         return pack;
+    }
+
+    public packageReachedTarget(pack: Package) {
+        this.packages = this.packages.filter(current => current !== pack);
     }
 }

@@ -1,6 +1,6 @@
 import { component, initialize, Inject } from "tsdi";
 import Victor = require("victor");
-import { House } from "../actors/house";
+import { House } from "../actors/towers/house";
 import { Controller } from "../controller";
 import { Towers } from "./towers";
 
@@ -14,8 +14,8 @@ export class Houses implements Controller {
     public init() {
         this.addHouse(new House(new Victor(-150, 0)));
         this.addHouse(new House(new Victor(150, 0)));
-        this.houses[0].connect(this.houses[1]);
-        this.houses[1].connect(this.houses[0]);
+        this.houses[0].addTarget(this.houses[1]);
+        this.houses[1].addTarget(this.houses[0]);
     }
 
     private addHouse(house: House) {

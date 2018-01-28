@@ -4,12 +4,9 @@ import { Sprite, Animation } from "phaser-ce";
 
 import { Tower } from "../tower";
 import { Bird } from "../bird";
-import { Layers } from "../../layers";
 
 @external
 export class SimpleTower extends Tower {
-    @inject private layers: Layers;
-
     private animations: {
         active: Animation;
     };
@@ -18,14 +15,8 @@ export class SimpleTower extends Tower {
         super(pos, capacity);
     }
 
-    @initialize
     protected init() {
-        super.init();
-        this.sprite = this.game.add.sprite(this.pos.x, this.pos.y, "tower");
-        this.sprite.anchor.x = 0.5;
-        this.sprite.anchor.y = 0.5;
-
-        this.layers.ground.add(this.sprite);
+        this.sprite = this.game.add.sprite(0, 0, "tower");
 
         this.animations = {
             active: this.sprite.animations.add(
@@ -36,10 +27,10 @@ export class SimpleTower extends Tower {
     }
 
     public canConnect(target: Tower): boolean {
-        return this.connections.length < 1;
+        return this.possibleTargets.length < 1;
     }
 
     protected getTarget(bird: Bird): Tower {
-        return this.connections[0];
+        return this.possibleTargets[0];
     }
 }

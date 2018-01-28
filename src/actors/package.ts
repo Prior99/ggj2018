@@ -1,21 +1,25 @@
 import { external, inject, initialize } from "tsdi";
 import { Sprite, Animation, Game } from "phaser-ce";
-import { House } from "./house";
+import { House } from "./towers/house";
 import { Layers } from "../layers";
+import { Carrier } from "./birds/carrier";
+import { Money } from "../controllers/money";
 import Victor = require("victor");
 
 @external
 export class Package {
+    @inject private money: Money;
     @inject private game: Game;
     @inject private layers: Layers;
 
     public pos: Victor;
+    public carrier: Carrier;
 
     private sprite: Sprite;
     private animations: {
         default: Animation;
     };
-    private target: House;
+    public target: House;
 
     constructor(pos: Victor, target: House) {
         this.pos = pos;
@@ -36,5 +40,17 @@ export class Package {
     }
     public update(dt: number) {
         return;
+    }
+    public attach(carrier: Carrier) {
+        this.carrier = carrier;
+        carrier.sprite.addChild(this.sprite);
+        this.sprite.x = 0;
+        this.sprite.y = 0;
+        this.pos = this.carrier.pos;
+    }
+
+    public reachedTarget() {
+        this.sprite.destroy();
+        this.money.packageDelivered();
     }
 }

@@ -1,3 +1,9 @@
+@font-face {
+    font-family: "ancient";
+    font-style: normal;
+    src: url("fonts/Ancient Modern Tales.ttf");
+}
+
 body {
     margin: 0;
     height: 100%;

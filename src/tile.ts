@@ -17,15 +17,25 @@ export class Tile {
         weed?: Animation;
     };
 
-    constructor(pos: Victor) {
+    private onClick: () => void
+
+    constructor(pos: Victor, onClick?: () => void) {
         this.gridPos = pos;
         this.rnd = gen(`${pos.x},${pos.y}`);
         this.hasWeed = this.rnd.random() < WEED_CHANCE;
+
+        this.onClick = onClick;
     }
 
     @initialize
     private init() {
         this.grass = this.game.add.sprite(this.pos.x, this.pos.y, "grass");
+
+        if (this.onClick) {
+            this.grass.inputEnabled = true;
+            this.grass.events.onInputUp.add(this.onClick);
+        }
+
         this.animations = {
             grass: this.grass.animations.add(
                 "default", Animation.generateFrameNames("grass ", 0, 6, ".ase", 1),

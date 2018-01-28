@@ -1,12 +1,17 @@
 import { external, inject, initialize } from "tsdi";
 import { Game, Line, Sprite } from "phaser-ce";
 import Victor = require("victor");
+
 import { REST_STAMINA_PER_SECOND } from "../const";
 import { Layers } from "../layers";
+import { Towers } from "../controllers/towers";
 import { Bird } from "./bird";
+import { Arrow } from "../ui/arrow";
 
 export abstract class Tower {
     @inject protected game: Game;
+    @inject private layers: Layers;
+    @inject("Towers") private towerController: Towers;
 
     protected pos: Victor;
 
@@ -14,8 +19,9 @@ export abstract class Tower {
     public birds: Bird[];
     public seatingOffsets: {x: number, y: number}[];
 
-    protected connections: Tower[] = [];
-    private lines: Line[] = [];
+    protected possibleTargets: Tower[] = [];
+    private connectionSprites: Arrow[] = [];
+
     private warning: Sprite;
 
     constructor(
@@ -29,8 +35,36 @@ export abstract class Tower {
         this.seatingOffsets = seatingOffsets;
     }
 
-    protected init() {
-        this.checkConnection();
+    protected abstract init();
+
+    @initialize
+    private initTower() {
+        this.init();
+
+        this.sprite.anchor.setTo(0.5, 0.5);
+
+        const button = this.game.add.button(
+            this.pos.x, this.pos.y, undefined, this.onSelect, this, 0, 0, 0, 0, this.layers.ground,
+        );
+        button.anchor.setTo(0.5, 0.5);
+        button.addChild(this.sprite);
+
+        this.checkHasTargets();
+    }
+
+    private onSelect() {
+        this.towerController.select(this);
+    }
+
+    public set selected(selected: boolean) {
+        if (selected) {
+            this.connectionSprites = this.possibleTargets.map((connection) =>
+                new Arrow(this.position, connection.position),
+            );
+        } else {
+            this.connectionSprites.forEach((sprite) => sprite.destroy());
+            this.connectionSprites = [];
+        }
     }
 
     protected abstract getTarget(bird: Bird): Tower;
@@ -68,33 +102,31 @@ export abstract class Tower {
         // No post connect action. For bidirectional towers, connect target to this
     }
 
-    public connect(tower: Tower): boolean {
+    public addTarget(tower: Tower): boolean {
         if (this.canConnect(tower)) {
-            this.connections.push(tower);
+            this.possibleTargets.push(tower);
             this.postConnect(tower);
-            const line = new Line();
-            line.fromSprite(this.sprite, tower.sprite);
-            this.lines.push(line);
-            this.checkConnection();
+
+            this.checkHasTargets();
             return true;
         }
 
         return false;
     }
 
-    public disconnect(tower: Tower): void {
-        const connectionIndex = this.connections.indexOf(tower);
+    public removeTarget(tower: Tower): void {
+        const connectionIndex = this.possibleTargets.indexOf(tower);
 
         if (connectionIndex === -1) {
             return;
         }
 
-        this.connections = this.connections.splice(connectionIndex, 1);
-        this.checkConnection();
+        this.possibleTargets = this.possibleTargets.splice(connectionIndex, 1);
+        this.checkHasTargets();
     }
 
-    private checkConnection() {
-        if (this.connections.length === 0) {
+    private checkHasTargets() {
+        if (this.possibleTargets.length === 0) {
             if (!this.warning) {
                 this.warning = this.game.add.sprite(this.pos.x, this.pos.y - 14, "warning");
                 this.warning.alpha = 0;
@@ -115,7 +147,7 @@ export abstract class Tower {
             }
             bird.stamina += dt * REST_STAMINA_PER_SECOND;
 
-            if (bird.isRested && !bird.timeOfDeath) {
+            if (bird.isRested && !bird.timeOfDeath && this.possibleTargets.length > 0) {
                 this.sendBirdAway(bird, this.getTarget(bird));
                 return;
             }
@@ -129,6 +161,11 @@ export abstract class Tower {
     }
 
     public render() {
-        // this.lines.forEach(line => this.game.debug.geom(line, "rgba(255, 255, 255, 0.3)"));
+        this.possibleTargets.forEach(conn => {
+            const line = new Line();
+            line.fromSprite(this.sprite, conn.sprite);
+
+            this.game.debug.geom(line, "rgba(255, 255, 255, 0.3)");
+        });
     }
 }

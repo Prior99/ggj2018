@@ -1,7 +1,10 @@
 import { component, inject, initialize } from "tsdi";
+import { bind } from "decko";
 import { Game } from "phaser-ce";
-import { Tile } from "./tile";
 import Victor = require("victor");
+
+import { Towers } from "./controllers/towers";
+import { Tile } from "./tile";
 
 function toKey(pos: Victor) {
     return `${pos.x},${pos.y}`;
@@ -10,6 +13,8 @@ function toKey(pos: Victor) {
 @component
 export class World {
     @inject private game: Game;
+    @inject private towerController: Towers;
+
     private tiles = new Map<string, Tile>();
 
     @initialize
@@ -27,8 +32,13 @@ export class World {
         if (this.tiles.has(key)) {
             return this.tiles.get(key);
         }
-        const tile = new Tile(pos);
+        const tile = new Tile(pos, this.onClick);
         this.tiles.set(key, tile);
         return tile;
+    }
+
+    @bind
+    private onClick() {
+        this.towerController.deselect();
     }
 }

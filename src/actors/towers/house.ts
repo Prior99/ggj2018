@@ -1,16 +1,15 @@
 import { external, inject, initialize } from "tsdi";
 import { Sprite, Animation, Game } from "phaser-ce";
 import Victor = require("victor");
-import { Layers } from "../layers";
-import { Packages } from "../controllers/packages";
-import { Package } from "./package";
-import { Tower } from "./tower";
-import { PACKAGE_INTERVAL_VARIETY, PACKAGE_INTERVAL } from "../const";
-import { Bird } from "./bird";
+
+import { Packages } from "../../controllers/packages";
+import { Package } from "../package";
+import { Tower } from "../tower";
+import { PACKAGE_INTERVAL_VARIETY, PACKAGE_INTERVAL } from "../../const";
+import { Bird } from "../bird";
 
 @external
 export class House extends Tower {
-    @inject private layers: Layers;
     @inject private packages: Packages;
 
     private animations: {
@@ -23,17 +22,10 @@ export class House extends Tower {
 
     constructor(pos: Victor) {
         super(pos, 1, [{x: 16, y: -2}]);
-        this.pos = pos;
     }
 
-    @initialize
     protected init() {
-        super.init();
-        this.sprite = this.game.add.sprite(this.pos.x, this.pos.y, "house");
-        this.sprite.anchor.x = 0.5;
-        this.sprite.anchor.y = 0.5;
-
-        this.layers.ground.add(this.sprite);
+        this.sprite = this.game.add.sprite(0, 0, "house");
 
         this.animations = {
             default: this.sprite.animations.add(
@@ -41,6 +33,7 @@ export class House extends Tower {
             ),
         };
     }
+
     public update(dt: number) {
         super.update(dt);
         if (!this.packageWaiting) {
@@ -55,10 +48,17 @@ export class House extends Tower {
     }
 
     public canConnect(target: Tower): boolean {
-        return this.connections.length < 1;
+        return this.possibleTargets.length < 1;
     }
 
     protected getTarget(bird: Bird): Tower {
-        return this.connections[0];
+        return this.possibleTargets[0];
+    }
+    protected sendBirdAway(bird: Bird) {
+        if (this.packageWaiting) {
+            if (bird.tryAttachPackage(this.packageWaiting)) {
+                delete this.packageWaiting;
+            }
+        }
     }
 }
