@@ -222,6 +222,7 @@ export class Router extends Tower {
         }
         return this.findRandomTarget();
     }
+
     protected sendBirdAway(bird: Bird) {
         return;
     }
@@ -248,8 +249,8 @@ export class Router extends Tower {
                 this.routingTable.set(query.target, { used: 0, via: bird.from });
                 this.activeQueries = this.activeQueries.filter(active => active !== parent);
             } else {
-                parent.failed.push(query.origin);
-                parent.active.filter(current => current.to !== query.origin);
+                query.failed.push(bird.from);
+                query.active.filter(current => current.to !== bird.from);
             }
             return;
         }
