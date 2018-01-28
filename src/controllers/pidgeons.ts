@@ -6,6 +6,8 @@ import { Discovery } from "../actors/birds/discovery";
 import { Controller } from "../controller";
 import { Sprite, Game, Particles } from "phaser-ce";
 
+import { MAX_BIRDS, INITIAL_BIRDS, CARRIER_CHANCE } from "../const";
+
 @component("Pidgeons")
 export class Pidgeons implements Controller {
     @inject private game: Game;
@@ -13,17 +15,19 @@ export class Pidgeons implements Controller {
     private pidgeons: Bird[] = [];
     private featherEmitter: Particles.Arcade.Emitter;
 
+    private spawn<T extends Bird>(B: {new(pos: Victor): T; }) {
+        const x = Math.random() * 600 - 300;
+        const y = Math.random() * 600 - 300;
+        this.pidgeons.push(new B(new Victor(x, y)));
+    }
+
     @initialize
     public init() {
-        for (let i = 0; i < 10; ++i) {
-            const x = Math.random() * 600 - 300;
-            const y = Math.random() * 600 - 300;
-            this.pidgeons.push(new Carrier(new Victor(x, y)));
+        for (let i = 0; i < Math.floor(CARRIER_CHANCE * INITAL_BIRDS); ++i) {
+            this.spawn(Carrier);
         }
-        for (let i = 0; i < 30; ++i) {
-            const x = Math.random() * 600 - 300;
-            const y = Math.random() * 600 - 300;
-            this.pidgeons.push(new Discovery(new Victor(x, y)));
+        for (let i = 0; i < Math.ceil((1 - CARRIER_CHANCE) * INITAL_BIRDS); ++i) {
+            this.spawn(Discovery);
         }
 
         this.featherEmitter = this.game.add.emitter(0, 0, 2000);
@@ -48,6 +52,15 @@ export class Pidgeons implements Controller {
             this.featherEmitter.start(true, 1000, null, 50);
         });
         this.pidgeons = alive;
+
+        if (this.pidgeons.length < MAX_BIRDS) {
+            if (Math.random() <= CARRIER_CHANCE) {
+                this.spawn(Carrier);
+            } else {
+                this.spawn(Discovery);
+            }
+        }
+
         this.pidgeons.map(bird => bird.update(dt));
     }
 

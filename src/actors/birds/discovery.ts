@@ -11,7 +11,7 @@ export class Discovery extends Bird {
     @inject protected game: Game;
 
     // Might be undefined. If defined, the bird has been given the mission to find a route.
-    public query: Query;
+    private q: Query;
     private discoveryStart: Tower;
 
     constructor(pos: Victor) {
@@ -39,7 +39,20 @@ export class Discovery extends Bird {
                 "idleWing", Animation.generateFrameNames("crow ", 9, 9, ".ase", 1),
             ),
         };
+
         super.init();
+    }
+
+    public set query(query: Query) {
+        this.q = query;
+
+        if (query) {
+            this.sprite.tint = 0xFF0000;
+        }
+    }
+
+    public get query() {
+        return this.q;
     }
 
     public tryAttachPackage(pack: Package): boolean {
