@@ -246,6 +246,16 @@ export class Router extends Tower {
         if (!query) {
             return;
         }
+
+        const birdsWithTheSameTask = this.birds.filter((curr) =>
+            (curr instanceof Discovery && curr.query &&
+                curr.query.origin === query.origin && curr.query.target === query.target),
+        );
+        // let the existing birds handle this
+        if (birdsWithTheSameTask.length > 1) {
+            delete bird.query;
+        }
+
         // The parent of the query is the last step of the query chain.
         const { parent } = query;
         if (query.origin === this) {
