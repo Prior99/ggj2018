@@ -15,7 +15,11 @@ export class StateBoot extends State {
         this.game.load.atlas("grass", "assets/grass.png", "assets/grass.json");
         this.game.load.atlas("weed", "assets/weed.png", "assets/weed.json");
 
-        this.game.load.image("add-tower-button", "assets/tower_add.png");
+        this.game.load.image("button", "assets/button.png");
+        this.game.load.image("icon-coin", "assets/icon-coin.png");
+        this.game.load.image("icon-add", "assets/icon-add.png");
+        this.game.load.image("icon-tower-simple", "assets/icon-tower-simple.png");
+
         this.game.load.image("feather", "assets/seagull-feather.png");
 
         this.game.load.atlas("warning", "assets/warning.png", "assets/warning.json");
