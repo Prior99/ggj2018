@@ -28,7 +28,7 @@ export class Pidgeons implements Controller {
 
         this.pidgeons[0].follow = true;
 
-        this.game.load.image("feather", "assets/sprites/diamond.png");
+        this.game.load.image("feather", "assets/seagull-feather.png");
         this.featherEmitter = this.game.add.emitter(0, 0, 100);
         this.featherEmitter.makeParticles("feather");
     }
