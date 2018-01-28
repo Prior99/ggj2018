@@ -121,6 +121,7 @@ export abstract class Bird {
                 // Must not be in `badTargets`.
                 if (
                     distance < oldBest.closestDistance &&
+                    tower !== this.from &&
                     badTargets.every((badTarget) => badTarget !== tower) &&
                     (Math.random() < 0.6 || !oldBest.bestTower)
                 ) {
@@ -144,6 +145,12 @@ export abstract class Bird {
 
     public update(dt: number) {
         const { towers, badTargets } = this;
+
+        if (this.stamina < 0) {
+            this.kill();
+            return;
+        }
+
         // Behavior.
         if (!this.target) {
             this.selectAnimation();
