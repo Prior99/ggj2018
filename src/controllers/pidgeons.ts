@@ -23,10 +23,10 @@ export class Pidgeons implements Controller {
 
     @initialize
     public init() {
-        for (let i = 0; i < Math.floor(CARRIER_CHANCE * INITAL_BIRDS); ++i) {
+        for (let i = 0; i < Math.floor(CARRIER_CHANCE * INITIAL_BIRDS); ++i) {
             this.spawn(Carrier);
         }
-        for (let i = 0; i < Math.ceil((1 - CARRIER_CHANCE) * INITAL_BIRDS); ++i) {
+        for (let i = 0; i < Math.ceil((1 - CARRIER_CHANCE) * INITIAL_BIRDS); ++i) {
             this.spawn(Discovery);
         }
 
