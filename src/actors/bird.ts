@@ -217,21 +217,6 @@ export abstract class Bird {
         this.acceleration = initialAcceleration;
     }
 
-    // public get target() {
-    //     const { allActive } = this.towers;
-    //     if (allActive.length === 0) {
-    //         return;
-    //     }
-    //     return allActive.reduce((result, current) => {
-    //         const distanceCurrent = this.pos.clone().distance(current.pos);
-    //         const distanceOld = this.pos.clone().distance(result.pos);
-    //         if (distanceCurrent > distanceOld) {
-    //             return current;
-    //         }
-    //         return result;
-    //     }).pos;
-    // }
-
     public abstract tryAttachPackage(pack: Package): boolean;
     public abstract handleLandingDenied(): void;
 }
