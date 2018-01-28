@@ -84,7 +84,15 @@ export class ConnectionHandler {
     private updateArrow(pointer: Pointer) {
         const { worldX, worldY } = pointer;
 
-        this.arrow.target = new Victor(worldX, worldY);
+        const range = this.from.props.range;
+        const target = new Victor(worldX, worldY);
+        const arr = target.subtract(this.from.position);
+
+        if (arr.magnitude() > range) {
+            arr.normalize().multiplyScalar(range);
+        }
+
+        this.arrow.target = this.from.position.add(arr);
 
         const canConnect = !this.currentTarget || this.from.canConnect(this.currentTarget);
         this.arrow.disabled = !canConnect;
@@ -101,7 +109,7 @@ export class ConnectionHandler {
                 new Phaser.Point(s.left, s.bottom),
             ]);
 
-            if (bounds.contains(x, y)) {
+            if (bounds.contains(x, y) && bounds.contains(this.arrow.target.x, this.arrow.target.y)) {
                 this.from.addTarget(this.currentTarget);
             }
         }

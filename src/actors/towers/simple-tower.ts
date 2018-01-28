@@ -6,6 +6,8 @@ import { Tower } from "../tower";
 import { Bird } from "../bird";
 import { Discovery } from "../birds/discovery";
 
+import { TowerType } from "../../utils/tower";
+
 @external
 export class SimpleTower extends Tower {
     private animations: {
@@ -25,6 +27,10 @@ export class SimpleTower extends Tower {
             ),
         };
         this.animations.active.play(1, true);
+    }
+
+    public get type() {
+        return TowerType.SIMPLE;
     }
 
     public canConnect(target: Tower): boolean {

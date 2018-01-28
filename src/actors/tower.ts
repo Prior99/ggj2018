@@ -7,10 +7,14 @@ import { REST_STAMINA_PER_SECOND } from "../const";
 import { Layers } from "../layers";
 import { ConnectionHandler } from "../behaviour/connect";
 import { Towers } from "../controllers/towers";
+import { Money } from "../controllers/money";
 import { Bird } from "./bird";
 import { Arrow } from "../ui/arrow";
 
+import { TowerType, getTowerProps } from "../utils/tower";
+
 export abstract class Tower {
+    @inject private money: Money;
     @inject protected game: Game;
     @inject private layers: Layers;
     @inject("Connector") private connector: ConnectionHandler;
@@ -40,6 +44,7 @@ export abstract class Tower {
         this.seatingOffsets = seatingOffsets;
     }
 
+    public abstract get type(): TowerType;
     protected abstract init();
 
     @initialize
@@ -57,6 +62,10 @@ export abstract class Tower {
 
     public get drawable() {
         return this.sprite;
+    }
+
+    public get props() {
+        return getTowerProps(this.type);
     }
 
     public set isSelected(selected: boolean) {
@@ -83,7 +92,7 @@ export abstract class Tower {
         const current = this.connectionSprites.indexOf(connection);
 
         if (this.selectedConnection !== undefined && current !== this.selectedConnection) {
-            // TODO deselect current
+            // deselect current
             this.connectionSprites[this.selectedConnection].color = 0xFFFFFF;
             this.game.input.keyboard.removeKeyCapture(Keyboard.X);
         }
@@ -189,7 +198,9 @@ export abstract class Tower {
             if (bird === undefined) {
                 return;
             }
-            bird.stamina += dt * REST_STAMINA_PER_SECOND;
+            const rechargeAmount = dt * REST_STAMINA_PER_SECOND;
+            bird.stamina += rechargeAmount;
+            this.money.staminaRecharged(rechargeAmount);
 
             if (bird.isRested) {
                 const target = this.getTarget(bird);

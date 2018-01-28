@@ -9,6 +9,8 @@ import { Carrier } from "../birds/carrier";
 import { House } from "./house";
 import { ROUTING_TIMEOUT } from "../../const";
 
+import { TowerType } from "../../utils/tower";
+
 export interface Route {
     via: Tower;
     used: number;
@@ -80,6 +82,10 @@ export class Router extends Tower {
             ),
         };
         this.animations.default.play(3, true);
+    }
+
+    public get type() {
+        return TowerType.ROUTER;
     }
 
     public update(dt: number) {
@@ -216,6 +222,7 @@ export class Router extends Tower {
         }
         return this.findRandomTarget();
     }
+
     protected sendBirdAway(bird: Bird) {
         return;
     }
@@ -235,15 +242,18 @@ export class Router extends Tower {
         }
         // The parent of the query is the last step of the query chain.
         const { parent } = query;
-        if (parent && query.origin === this) {
+        if (query.origin === this) {
             delete bird.query;
             if (query.fulfilledVia) {
-                parent.fulfilledVia = bird.from;
+                if (parent) {
+                    parent.fulfilledVia = this;
+                }
+
                 this.routingTable.set(query.target, { used: 0, via: bird.from });
-                this.activeQueries = this.activeQueries.filter(active => active !== parent);
+                this.activeQueries = this.activeQueries.filter(active => active !== query);
             } else {
-                parent.failed.push(query.origin);
-                parent.active.filter(current => current.to !== query.origin);
+                query.failed.push(bird.from);
+                query.active.filter(current => current.to !== bird.from);
             }
             return;
         }

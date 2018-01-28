@@ -67,6 +67,10 @@ export class Arrow {
         this.sprite.position.setTo(to.x, to.y);
     }
 
+    public get target() {
+        return this.to;
+    }
+
     private getMeasures() {
         const connection = this.from.clone().subtract(this.to);
         const length = connection.magnitude();
