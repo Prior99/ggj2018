@@ -54,6 +54,7 @@ export interface Query {
      * then this property will carry the immediate neighbour which lead to finding the final target.
      */
     fulfilledVia?: Tower;
+    visited: Tower[];
 }
 
 @external
@@ -166,13 +167,15 @@ export class Router extends Tower {
         // just send that bird away.
         const { oldestActiveQueryNotAllBusy: nextQuery } = this;
         if (!nextQuery) {
-            return this.findRandomTarget();
+            return this.findRandomTarget(bird);
         }
         bird.query = nextQuery;
         const activeTowers = nextQuery.active.map(pair => pair.to);
         // Find a neighbour to which no discovery bird has been sent yet.
         const neighbour = this.possibleTargets.find(possible => {
-            return !activeTowers.includes(possible) && !nextQuery.failed.includes(possible);
+            return !activeTowers.includes(possible) && // Don't visit currently active towers.
+                !nextQuery.failed.includes(possible) && // Don't visit towers which are already reported to be faiing.
+                !nextQuery.visited.includes(possible);  // Don't visit any towers twice.
         });
         // If we could not find such a neighbour, this means there is currently nothing to do for this query.
         // if (!neighbour) {
@@ -188,7 +191,7 @@ export class Router extends Tower {
 
     private findCarrierTarget(bird: Carrier): Tower {
         if (!bird.freight) {
-            return this.findRandomTarget();
+            return this.findRandomTarget(bird);
         }
         const { target } = bird.freight;
         if (this.routingTable.has(target)) {
@@ -205,12 +208,19 @@ export class Router extends Tower {
             active: [],
             started: new Date(),
             origin: this,
+            visited: [this],
         });
         return;
     }
 
-    private findRandomTarget(): Tower {
-        return this.possibleTargets[Math.floor(Math.random() * this.possibleTargets.length)];
+    private findRandomTarget(bird: Bird): Tower {
+        const goodTargets = this.possibleTargets.filter(possible => {
+            if (bird instanceof Discovery) {
+                return !(possible instanceof House);
+            }
+            return true;
+        });
+        return goodTargets[Math.floor(Math.random() * goodTargets.length)];
     }
 
     protected getTarget(bird: Bird): Tower {
@@ -220,7 +230,7 @@ export class Router extends Tower {
         if (bird instanceof Discovery) {
             return this.findDiscoveryTarget(bird);
         }
-        return this.findRandomTarget();
+        return this.findRandomTarget(bird);
     }
 
     protected sendBirdAway(bird: Bird) {
@@ -240,6 +250,7 @@ export class Router extends Tower {
         if (!query) {
             return;
         }
+        query.visited.push(this);
         // The parent of the query is the last step of the query chain.
         const { parent } = query;
         if (query.origin === this) {
@@ -268,6 +279,7 @@ export class Router extends Tower {
             started: new Date(),
             origin: this,
             target: query.target,
+            visited: query.visited,
         });
     }
 }
