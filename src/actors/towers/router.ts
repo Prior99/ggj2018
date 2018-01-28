@@ -92,6 +92,9 @@ export class Router extends Tower {
     public update(dt: number) {
         super.update(dt);
         this.scrubActiveTimeouts();
+        this.activeQueries = this.activeQueries.filter(activeQuery => {
+            return !this.possibleTargets.every(possible => activeQuery.failed.includes(possible));
+        });
         return;
     }
 
@@ -114,10 +117,11 @@ export class Router extends Tower {
         return true;
     }
 
-    private get oldestActiveQueryNotAllBusy() {
+    private oldestActiveQueryNotAllBusyExcept(except: Query[] = []) {
         return this.activeQueries
             // Ignore all queries where all of this routers neighbours have either failed or are currently active.
             .filter(query => {
+                if (except.includes(query)) { return false; }
                 const { failed, active } = query;
                 const activeTowers = active.map(pair => pair.to);
                 return this.possibleTargets.some(possible =>
@@ -165,28 +169,31 @@ export class Router extends Tower {
         }
         // If the bird was not yet on a mission and no queries are currently active and not completely busy,
         // just send that bird away.
-        const { oldestActiveQueryNotAllBusy: nextQuery } = this;
-        if (!nextQuery) {
-            return this.findRandomTarget(bird);
+        let nextQuery: Query;
+        const ignored: Query[] = [];
+        do {
+            nextQuery = this.oldestActiveQueryNotAllBusyExcept(ignored);
+            if (!nextQuery) {
+                return this.findRandomTarget(bird);
+            }
+            bird.query = nextQuery;
+            const activeTowers = nextQuery.active.map(pair => pair.to);
+            // Find a neighbour to which no discovery bird has been sent yet.
+            const neighbour = this.possibleTargets.find(possible => {
+                return !activeTowers.includes(possible) && // Don't visit currently active towers.
+                    !nextQuery.failed.includes(possible) && // Don't visit towers which are reported failing.
+                    !nextQuery.visited.includes(possible);  // Don't visit any towers twice.
+            });
+            // If we could not find such a neighbour, this means there is currently nothing to do for this query.
+            if (!neighbour) {
+                ignored.push(nextQuery);
+                continue;
+            }
+            nextQuery.active.push({ when: new Date(), to: neighbour, bird });
+            return neighbour;
         }
-        bird.query = nextQuery;
-        const activeTowers = nextQuery.active.map(pair => pair.to);
-        // Find a neighbour to which no discovery bird has been sent yet.
-        const neighbour = this.possibleTargets.find(possible => {
-            return !activeTowers.includes(possible) && // Don't visit currently active towers.
-                !nextQuery.failed.includes(possible) && // Don't visit towers which are already reported to be faiing.
-                !nextQuery.visited.includes(possible);  // Don't visit any towers twice.
-        });
-        // If we could not find such a neighbour, this means there is currently nothing to do for this query.
-        // if (!neighbour) {
-        //     if (this.possibleTargets.every(possible => nextQuery.failed.includes(possible))) {
-        //         this.activeQueries = this.activeQueries.filter(active => active !== nextQuery);
-        //         return nextQuery.origin;
-        //     }
-        //     return this.findRandomTarget();
-        // }
-        nextQuery.active.push({ when: new Date(), to: neighbour, bird });
-        return neighbour;
+        while (nextQuery);
+        return this.findRandomTarget(bird);
     }
 
     private findCarrierTarget(bird: Carrier): Tower {
