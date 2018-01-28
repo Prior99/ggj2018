@@ -242,10 +242,13 @@ export class Router extends Tower {
         }
         // The parent of the query is the last step of the query chain.
         const { parent } = query;
-        if (parent && query.origin === this) {
+        if (query.origin === this) {
             delete bird.query;
             if (query.fulfilledVia) {
-                parent.fulfilledVia = this;
+                if (parent) {
+                    parent.fulfilledVia = this;
+                }
+
                 this.routingTable.set(query.target, { used: 0, via: bird.from });
                 this.activeQueries = this.activeQueries.filter(active => active !== query);
             } else {
