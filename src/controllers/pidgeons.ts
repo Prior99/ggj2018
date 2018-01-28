@@ -28,12 +28,12 @@ export class Pidgeons implements Controller {
 
         this.pidgeons[0].follow = true;
 
-        this.game.load.image("feather", "assets/seagull-feather.png");
-        this.featherEmitter = this.game.add.emitter(0, 0, 100);
+        this.featherEmitter = this.game.add.emitter(0, 0, 2000);
         this.featherEmitter.makeParticles("feather");
     }
 
     public update(dt: number) {
+        this.featherEmitter.forEachAlive((p) => { p.alpha = p.lifespan / this.featherEmitter.lifespan; });
         const { dead, alive } = this.pidgeons.reduce((processed, pidgeon) => {
             if (pidgeon.timeOfDeath) {
                 return { ...processed, dead: [...processed.dead, pidgeon] };
@@ -46,9 +46,8 @@ export class Pidgeons implements Controller {
             this.featherEmitter.x = bird.pos.x;
             this.featherEmitter.y = bird.pos.y;
 
-            this.featherEmitter.setAlpha();
             // 'explode', 'lifetime', ignored when explosion, 'numParticles'
-            this.featherEmitter.start(true, 500, null, 50);
+            this.featherEmitter.start(true, 1000, null, 50);
         });
         this.pidgeons = alive;
         this.pidgeons.map(bird => bird.update(dt));
