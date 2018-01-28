@@ -2,7 +2,7 @@ import { external, inject, initialize } from "tsdi";
 import { Sprite, Animation, Game, Line } from "phaser-ce";
 import Victor = require("victor");
 
-import { ACCELLERATION_ACCELLERATION_SPEED, MAX_STAMINA, FLY_STAMINA_PER_SECOND } from "../const";
+import { ACCELLERATION_ACCELLERATION_SPEED, MAX_STAMINA, FLY_STAMINA_PER_SECOND, MAX_ACCELLERATION } from "../const";
 import { Layers } from "../layers";
 import { Towers } from "../controllers/towers";
 import { UI } from "../ui/game-ui";
@@ -142,7 +142,9 @@ export abstract class Bird {
         } else {
             // Bird is in midair and flying somewhere.
             this.stamina -= dt * FLY_STAMINA_PER_SECOND;
-            this.acceleration += dt * ACCELLERATION_ACCELLERATION_SPEED;
+            if (this.acceleration < MAX_ACCELLERATION) {
+                this.acceleration += dt * ACCELLERATION_ACCELLERATION_SPEED;
+            }
 
             const target = this.target;
             const targetPosition = target.position;

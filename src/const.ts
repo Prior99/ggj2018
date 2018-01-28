@@ -33,3 +33,4 @@ export const TOWER_RANGE = {
     ROUTER: 100,
 };
 export const ACCELLERATION_ACCELLERATION_SPEED = 2;
+export const MAX_ACCELLERATION = 100;
