@@ -6,7 +6,7 @@ import { Discovery } from "../actors/birds/discovery";
 import { Controller } from "../controller";
 import { Sprite, Game, Particles } from "phaser-ce";
 
-import { MAX_BIRDS, INITIAL_BIRDS, CARRIER_CHANCE } from "../const";
+import { MAX_BIRDS, INITIAL_BIRDS, CARRIER_CHANCE, SPAWN_INTERVAL } from "../const";
 import { Query } from "../actors/towers/router";
 
 @component("Pidgeons")
@@ -15,6 +15,8 @@ export class Pidgeons implements Controller {
 
     private pidgeons: Bird[] = [];
     private featherEmitter: Particles.Arcade.Emitter;
+
+    private timstSinceSpawn = 0;
 
     private spawn<T extends Bird>(B: {new(pos: Victor): T; }) {
         const x = Math.random() * 600 - 300;
@@ -36,6 +38,8 @@ export class Pidgeons implements Controller {
     }
 
     public update(dt: number) {
+        this.timstSinceSpawn += dt;
+
         this.featherEmitter.forEachAlive((p) => { p.alpha = p.lifespan / this.featherEmitter.lifespan; });
         const { dead, alive } = this.pidgeons.reduce((processed, pidgeon) => {
             if (pidgeon.timeOfDeath) {
@@ -54,7 +58,8 @@ export class Pidgeons implements Controller {
         });
         this.pidgeons = alive;
 
-        if (this.pidgeons.length < MAX_BIRDS) {
+        if (this.pidgeons.length < MAX_BIRDS && this.timstSinceSpawn > SPAWN_INTERVAL) {
+            this.timstSinceSpawn = 0;
             if (Math.random() <= CARRIER_CHANCE) {
                 this.spawn(Carrier);
             } else {

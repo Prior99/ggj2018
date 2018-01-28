@@ -1,6 +1,7 @@
-export const MAX_BIRDS = 11;
+export const MAX_BIRDS = 40;
 export const INITIAL_BIRDS = 11;
 export const CARRIER_CHANCE = 0.1;
+export const SPAWN_INTERVAL = 10;
 
 export const REST_STAMINA_PER_SECOND = 2;
 export const FLY_STAMINA_PER_SECOND = 1;
