@@ -2,7 +2,7 @@ import { external, inject, initialize } from "tsdi";
 import { Sprite, Animation, Game, Line } from "phaser-ce";
 import Victor = require("victor");
 
-import { MAX_STAMINA, FLY_STAMINA_PER_SECOND } from "../const";
+import { ACCELLERATION_ACCELLERATION_SPEED, MAX_STAMINA, FLY_STAMINA_PER_SECOND } from "../const";
 import { Layers } from "../layers";
 import { Towers } from "../controllers/towers";
 import { UI } from "../ui/game-ui";
@@ -10,7 +10,7 @@ import { Tower } from "./tower";
 import { Package } from "./package";
 
 const fps = 10;
-const acceleration = 70;
+const initialAcceleration = 70;
 const speed = 50;
 
 function normalizeDeg(deg: number) {
@@ -51,6 +51,7 @@ export abstract class Bird {
     };
 
     public from: Tower;
+    private acceleration = initialAcceleration;
 
     constructor(pos: Victor) {
         this.pos = pos;
@@ -149,6 +150,7 @@ export abstract class Bird {
         } else {
             // Bird is in midair and flying somewhere.
             this.stamina -= dt * FLY_STAMINA_PER_SECOND;
+            this.acceleration += dt * ACCELLERATION_ACCELLERATION_SPEED;
 
             const target = this.target;
             const targetPosition = target.position;
@@ -178,7 +180,7 @@ export abstract class Bird {
         if (this.target) {
             const targetPosition = this.target.position;
             const dir = targetPosition.subtract(this.pos).normalize();
-            this.velocity.add(dir.multiplyScalar(dt * acceleration));
+            this.velocity.add(dir.multiplyScalar(dt * this.acceleration));
             const currentSpeed = this.velocity.length();
             this.velocity.multiplyScalar(Math.min(speed, currentSpeed) / currentSpeed);
             this.sprite.angle = this.velocity.angleDeg() + 90;
@@ -211,6 +213,10 @@ export abstract class Bird {
         return;
     }
 
+    public landedOn(target: Tower) {
+        this.acceleration = initialAcceleration;
+    }
+
     // public get target() {
     //     const { allActive } = this.towers;
     //     if (allActive.length === 0) {
@@ -227,6 +233,5 @@ export abstract class Bird {
     // }
 
     public abstract tryAttachPackage(pack: Package): boolean;
-    public abstract landedOn(target: Tower): void;
     public abstract handleLandingDenied(): void;
 }

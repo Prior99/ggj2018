@@ -21,3 +21,5 @@ export const ROUTING_TIMEOUT = 120;
 export const TOWER_VALUE = {
     SIMPLE: 10,
 };
+
+export const ACCELLERATION_ACCELLERATION_SPEED = 2;

@@ -48,6 +48,7 @@ export class Carrier extends Bird {
     }
 
     public landedOn(tower: Tower) {
+        super.landedOn(tower);
         if (!this.freight) {
             return;
         }

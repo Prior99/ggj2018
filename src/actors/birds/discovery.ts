@@ -46,10 +46,6 @@ export class Discovery extends Bird {
         return false;
     }
 
-    public landedOn(tower: Tower) {
-        return;
-    }
-
     public handleLandingDenied() {
         if (this.query) {
             return;
