@@ -8,6 +8,7 @@ import { Towers } from "../controllers/towers";
 import { UI } from "../ui/game-ui";
 import { Tower } from "./tower";
 import { Package } from "./package";
+import { House } from "./towers/house";
 
 const fps = 10;
 const initialAcceleration = 70;
@@ -116,7 +117,7 @@ export abstract class Bird {
         const { towers, badTargets, pos } = this;
         // Radius search nearest free tower which is not in the list.
         const possibleTowers = towers.allActive.filter(
-            tower => !badTargets.some(bad => bad === tower) && tower !== this.from,
+            tower => !badTargets.some(bad => bad === tower) && tower !== this.from && !(tower instanceof House),
         );
         const bestTower = possibleTowers[Math.floor(Math.random() * possibleTowers.length)];
         if (!bestTower) {
