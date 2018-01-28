@@ -33,4 +33,9 @@ export class SimpleTower extends Tower {
     protected getTarget(bird: Bird): Tower {
         return this.possibleTargets[0];
     }
+
+    protected birdDepart(bird: Bird) {
+        // No specific actions required.
+        return;
+    }
 }

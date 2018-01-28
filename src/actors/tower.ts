@@ -148,17 +148,16 @@ export abstract class Tower {
             bird.stamina += dt * REST_STAMINA_PER_SECOND;
 
             if (bird.isRested && !bird.timeOfDeath && this.possibleTargets.length > 0) {
-                this.sendBirdAway(bird, this.getTarget(bird));
+                this.birdDepart(bird);
+                bird.target = this.getTarget(bird);
+                bird.startFlapping();
                 return;
             }
             this.birds = this.birds.map((b) => b && (b.target || b.timeOfDeath) ? undefined : b);
         });
     }
 
-    protected sendBirdAway(bird: Bird, target: Tower) {
-        bird.target = target;
-        bird.startFlapping();
-    }
+    protected abstract birdDepart(bird: Bird);
 
     public render() {
         this.possibleTargets.forEach(conn => {

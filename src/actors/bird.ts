@@ -185,7 +185,11 @@ export abstract class Bird {
         // Movement.
         if (this.target) {
             const targetPosition = this.target.position;
-            const dir = targetPosition.subtract(this.pos).normalize();
+            const dist = targetPosition.subtract(this.pos);
+            const velOrtho = this.velocity.clone().normalize().rotateByDeg(90);
+            const proj = velOrtho.dot(dist);
+            const dir = velOrtho.normalize().multiplyScalar(proj).add(dist.normalize().multiplyScalar()).normalize();
+
             this.velocity.add(dir.multiplyScalar(dt * acceleration));
             const currentSpeed = this.velocity.length();
             this.velocity.multiplyScalar(Math.min(speed, currentSpeed) / currentSpeed);

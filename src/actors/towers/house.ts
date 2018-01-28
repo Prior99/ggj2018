@@ -54,7 +54,8 @@ export class House extends Tower {
     protected getTarget(bird: Bird): Tower {
         return this.possibleTargets[0];
     }
-    protected sendBirdAway(bird: Bird) {
+    protected birdDepart(bird: Bird) {
+        // Also gra the package when departing.
         if (this.packageWaiting) {
             if (bird.tryAttachPackage(this.packageWaiting)) {
                 delete this.packageWaiting;

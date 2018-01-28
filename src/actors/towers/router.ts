@@ -38,7 +38,9 @@ export class Router extends Tower {
     protected getTarget(bird: Bird): Tower {
         return this.possibleTargets[0];
     }
-    protected sendBirdAway(bird: Bird) {
+
+    protected birdDepart(bird: Bird) {
+        // No specific actions required.
         return;
     }
 }
