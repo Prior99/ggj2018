@@ -87,7 +87,7 @@ export class ConnectionHandler {
         this.arrow.target = new Victor(worldX, worldY);
 
         const canConnect = !this.currentTarget || this.from.canConnect(this.currentTarget);
-        // this.arrow.disabled = !canConnect;
+        this.arrow.disabled = !canConnect;
     }
 
     private connect(x: number, y: number) {

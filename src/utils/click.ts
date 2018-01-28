@@ -1,6 +1,8 @@
 import { Events, Pointer } from "phaser-ce";
 
-export function onLeftClick(target: { inputEnabled?: boolean; events: Events; }, onClick: (...args: any[]) => void) {
+export function onLeftClick(
+    target: { inputEnabled?: boolean; events: Events; }, onClick: (...args: any[]) => void, context?: any
+) {
     let leftClick = false;
 
     function down(_, pointer: Pointer) {
@@ -15,6 +17,6 @@ export function onLeftClick(target: { inputEnabled?: boolean; events: Events; },
     }
 
     target.inputEnabled = true;
-    target.events.onInputDown.add(down);
-    target.events.onInputUp.add(up);
+    target.events.onInputDown.add(down, undefined, undefined, context);
+    target.events.onInputUp.add(up, undefined, undefined, context);
 }

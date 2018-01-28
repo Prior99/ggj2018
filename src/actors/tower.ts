@@ -1,6 +1,6 @@
 import { external, inject, initialize } from "tsdi";
 import { bind } from "decko";
-import { Game, Line, Sprite, Pointer } from "phaser-ce";
+import { Game, Line, Sprite, Pointer, Keyboard } from "phaser-ce";
 import Victor = require("victor");
 
 import { REST_STAMINA_PER_SECOND } from "../const";
@@ -25,6 +25,7 @@ export abstract class Tower {
     protected possibleTargets: Tower[] = [];
     private connectionSprites: Arrow[] = [];
     private selected = false;
+    private selectedConnection: number;
 
     private warning: Sprite;
 
@@ -59,19 +60,42 @@ export abstract class Tower {
     }
 
     public set isSelected(selected: boolean) {
-        this.selected = selected;
-        if (selected) {
-            this.connectionSprites = this.possibleTargets.map((connection) =>
-                new Arrow(this.position, connection.position),
-            );
+        if (this.selected !== selected) {
+            if (selected) {
+                this.connectionSprites = this.possibleTargets.map((connection) =>
+                    new Arrow(this.position, connection.position, this.onSelectConnection),
+                );
 
-            this.sprite.tint = 0x44f72c;
-        } else {
-            this.connectionSprites.forEach((sprite) => sprite.destroy());
-            this.connectionSprites = [];
+                this.sprite.tint = 0x44f72c;
+            } else {
+                this.connectionSprites.forEach((sprite) => sprite.destroy());
+                this.connectionSprites = [];
 
-            this.sprite.tint = 0xFFFFFF;
+                this.sprite.tint = 0xFFFFFF;
+            }
         }
+
+        this.selected = selected;
+    }
+
+    @bind
+    private onSelectConnection(sprite: any, pointer: Pointer, _, connection: Arrow) {
+        const current = this.connectionSprites.indexOf(connection);
+
+        if (this.selectedConnection !== undefined && current !== this.selectedConnection) {
+            // TODO deselect current
+            this.connectionSprites[this.selectedConnection].color = 0xFFFFFF;
+            this.game.input.keyboard.removeKeyCapture(Keyboard.X);
+        }
+
+        this.selectedConnection = current;
+        connection.color = 0x44f72c;
+
+        const deleteKey = this.game.input.keyboard.addKey(Keyboard.X);
+        deleteKey.onDown.addOnce(() => {
+            this.removeTarget(this.possibleTargets[this.selectedConnection]);
+            this.selectedConnection = undefined;
+        });
     }
 
     public get isSelected() {
@@ -136,8 +160,13 @@ export abstract class Tower {
             return;
         }
 
-        this.possibleTargets = this.possibleTargets.splice(connectionIndex, 1);
+        this.possibleTargets.splice(connectionIndex, 1);
         this.checkHasTargets();
+
+        if (this.selected) {
+            this.connectionSprites[connectionIndex].destroy();
+            this.connectionSprites.splice(connectionIndex, 1);
+        }
     }
 
     private checkHasTargets() {
