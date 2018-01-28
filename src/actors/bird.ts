@@ -1,10 +1,11 @@
 import { external, inject, initialize } from "tsdi";
-import { Sprite, Animation, Game } from "phaser-ce";
+import { Sprite, Animation, Game, Line } from "phaser-ce";
 import Victor = require("victor");
 
 import { MAX_STAMINA, FLY_STAMINA_PER_SECOND } from "../const";
 import { Layers } from "../layers";
 import { Towers } from "../controllers/towers";
+import { UI } from "../ui/game-ui";
 import { Tower } from "./tower";
 import { Package } from "./package";
 
@@ -20,7 +21,8 @@ function normalizeDeg(deg: number) {
 
 export abstract class Bird {
     @inject protected game: Game;
-    @inject private layers: Layers;
+    @inject protected layers: Layers;
+    @inject protected ui: UI;
     @inject("Towers") private towers: Towers;
 
     public timeOfDeath: number;
@@ -37,8 +39,6 @@ export abstract class Bird {
     // Managed by `Bird`.
     public target: Tower;
     protected badTargets: Tower[];
-
-    private current = false;
 
     // Graphics stuff.
     public sprite: Sprite;
@@ -67,26 +67,17 @@ export abstract class Bird {
         this.sprite.anchor.x = 0.5;
         this.sprite.anchor.y = 0.5;
         this.sprite.inputEnabled = true;
-        this.sprite.events.onInputOver.add(() => console.log(this));
-        this.sprite.events.onInputDown.add(() => {
-            this.timeOfDeath = this.game.time.time / 1000;
-        });
+        this.sprite.events.onInputDown.add(() => this.ui.focusBird(this));
 
         this.layers.sky.add(this.sprite);
 
         this.startFlapping();
-        this.follow = this.current;
 
         this.selectRandomTarget();
     }
 
-    public set follow(follow: boolean) {
-        this.current = follow;
-        this.sprite.tint = this.current ? Phaser.Color.RED : Phaser.Color.WHITE;
-    }
-
-    public get follow() {
-        return this.current;
+    public kill() {
+        this.timeOfDeath = this.game.time.time / 1000;
     }
 
     public get stamina() {
@@ -116,7 +107,6 @@ export abstract class Bird {
             const animationKey = ["idle", "head1", "head2", "wing"][index];
             const animation = this.animations[animationKey];
 
-            this.follow = this.current;
             animation.play(fps, true);
         }
     }
@@ -205,7 +195,19 @@ export abstract class Bird {
         this.sprite.destroy();
     }
 
+    public get staminaRelative() {
+        return this.stamina / this.maxStamina;
+    }
+
     public render() {
+        if (this.ui.focusedBird !== this) {
+            return;
+        }
+
+        if (this.target) {
+            const currentLine = new Line(this.pos.x, this.pos.y, this.target.position.x, this.target.position.y);
+            this.game.debug.geom(currentLine, "rgb(0, 0, 255)");
+        }
         return;
     }
 

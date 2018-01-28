@@ -22,9 +22,9 @@ export class StateGame extends State {
     public create() {
         this.stage.backgroundColor = "#222222";
         this.tsdi.get(World);
-        this.tsdi.get(UI);
         this.tsdi.get(Money);
 
+        this.controllers.push(this.tsdi.get(UI));
         this.controllers.push(this.tsdi.get(Houses));
         this.controllers.push(this.tsdi.get(Towers));
         this.controllers.push(this.tsdi.get(Pidgeons));

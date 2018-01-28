@@ -26,8 +26,6 @@ export class Pidgeons implements Controller {
             this.pidgeons.push(new Discovery(new Victor(x, y)));
         }
 
-        this.pidgeons[0].follow = true;
-
         this.featherEmitter = this.game.add.emitter(0, 0, 2000);
         this.featherEmitter.makeParticles("feather");
     }

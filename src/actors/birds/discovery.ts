@@ -7,7 +7,7 @@ import { Tower } from "../tower";
 import { Query } from "../towers/router";
 
 @external
-export class Discovery  extends Bird {
+export class Discovery extends Bird {
     @inject protected game: Game;
 
     // Might be undefined. If defined, the bird has been given the mission to find a route.
@@ -59,7 +59,12 @@ export class Discovery  extends Bird {
     }
 
     public render() {
-        if (!(window as any).DEBUG_ROUTING) { return; }
+        super.render();
+
+        if (this.ui.focusedBird !== this) {
+            return;
+        }
+
         if (!this.query) {
             return;
         }
@@ -71,9 +76,5 @@ export class Discovery  extends Bird {
         const targetLine = new Line(this.pos.x, this.pos.y, target.position.x, target.position.y);
         this.game.debug.geom(targetLine, "rgb(255, 0, 0)");
 
-        if (this.target) {
-            const currentLine = new Line(this.pos.x, this.pos.y, this.target.position.x, this.target.position.y);
-            this.game.debug.geom(currentLine, "rgb(0, 0, 255)");
-        }
     }
 }

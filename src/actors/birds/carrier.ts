@@ -4,6 +4,7 @@ import { Sprite, Animation, Game } from "phaser-ce";
 import { Bird } from "../bird";
 import { Package } from "../package";
 import { Tower } from "../tower";
+import { Layers } from "../../layers";
 
 @external
 export class Carrier extends Bird {
@@ -15,7 +16,7 @@ export class Carrier extends Bird {
 
     @initialize
     protected init() {
-        this.sprite = this.game.add.sprite(this.pos.x, this.pos.y, "seagull");
+        this.sprite = this.layers.sky.create(this.pos.x, this.pos.y, "seagull");
 
         this.animations = {
             flap: this.sprite.animations.add(

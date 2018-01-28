@@ -5,10 +5,12 @@ import { Game, Sprite, Animation } from "phaser-ce";
 import { WEED_CHANCE, TILE_SIZE } from "./const";
 
 import { onLeftClick } from "./utils/click";
+import { Layers } from "./layers";
 
 @external
 export class Tile {
     @inject private game: Game;
+    @inject private layers: Layers;
     private gridPos: Victor;
     private rnd: RandomSeed;
     private hasWeed: boolean;
@@ -31,7 +33,7 @@ export class Tile {
 
     @initialize
     private init() {
-        this.grass = this.game.add.sprite(this.pos.x, this.pos.y, "grass");
+        this.grass = this.layers.floor.create(this.pos.x, this.pos.y, "grass");
 
         if (this.onClick) {
             onLeftClick(this.grass, this.onClick);
@@ -45,7 +47,7 @@ export class Tile {
         this.animations.grass.play(0, false);
         this.animations.grass.setFrame(this.rnd.intBetween(0, 6));
         if (this.hasWeed) {
-            this.weed = this.game.add.sprite(this.pos.x, this.pos.y, "weed");
+            this.weed = this.layers.floor.create(this.pos.x, this.pos.y, "weed");
             this.animations.weed = this.weed.animations.add(
                 "default", Animation.generateFrameNames("weed ", 0, 6, ".ase", 1),
             );

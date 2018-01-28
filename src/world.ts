@@ -5,6 +5,7 @@ import Victor = require("victor");
 
 import { ConnectionHandler } from "./behaviour/connect";
 import { Tile } from "./tile";
+import { UI } from "./ui/game-ui";
 
 function toKey(pos: Victor) {
     return `${pos.x},${pos.y}`;
@@ -12,6 +13,7 @@ function toKey(pos: Victor) {
 
 @component
 export class World {
+    @inject private ui: UI;
     @inject private game: Game;
     @inject private connected: ConnectionHandler;
 
@@ -39,6 +41,7 @@ export class World {
 
     @bind
     private onClick() {
+        this.ui.clickedRandom();
         this.connected.deselect();
     }
 }

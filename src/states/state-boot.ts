@@ -18,12 +18,15 @@ export class StateBoot extends State {
         this.game.load.image("add-tower-button", "assets/tower_add.png");
         this.game.load.image("feather", "assets/seagull-feather.png");
 
-        this.game.load.atlas("warning", "/assets/warning.png", "/assets/warning.json");
-        this.game.load.atlas("arrow-shaft", "/assets/arrow-shaft.png", "/assets/arrow-shaft.json");
-        this.game.load.atlas("arrow-head", "/assets/arrow-head.png", "/assets/arrow-head.json");
+        this.game.load.atlas("warning", "assets/warning.png", "assets/warning.json");
+        this.game.load.atlas("arrow-shaft", "assets/arrow-shaft.png", "assets/arrow-shaft.json");
+        this.game.load.atlas("arrow-head", "assets/arrow-head.png", "assets/arrow-head.json");
 
         this.game.load.audio("song", "sounds/song.wav");
         this.game.load.atlas("package", "assets/package.png", "assets/package.json");
+
+        this.game.load.image("progress-bar-container", "assets/progress-bar-container.png");
+        this.game.load.image("progress-bar-content", "assets/progress-bar-content.png");
     }
 
     public create() {
