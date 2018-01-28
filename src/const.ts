@@ -13,13 +13,14 @@ export const ZOOM = 2;
 export const PACKAGE_INTERVAL = 5;
 export const PACKAGE_INTERVAL_VARIETY = 5;
 
-export const INITIAL_MONEY = 100;
-export const MONEY_PER_PACKAGE = 2;
+export const INITIAL_MONEY = 10000;
+export const MONEY_PER_PACKAGE = 300;
+export const MONEY_PER_STAMINA = 0.01;
 
 export const ROUTING_TIMEOUT = 120;
 
 export const TOWER_VALUE = {
-    SIMPLE: 10,
+    SIMPLE: 1000,
 };
 
 export const ACCELLERATION_ACCELLERATION_SPEED = 2;
