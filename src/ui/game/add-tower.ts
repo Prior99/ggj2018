@@ -7,6 +7,7 @@ import { Layers } from "../../layers";
 import { Towers } from "../../controllers/towers";
 
 import { onLeftClick } from "../../utils/click";
+import { TowerType, getTowerProps } from "../../utils/tower";
 
 const style = { font: "8px Arial", fill: "#FFFFFF" };
 
@@ -21,9 +22,9 @@ class AddTowerButton {
 
     private x: number;
     private y: number;
-    private type: string;
+    private type: TowerType;
 
-    public constructor(x: number, y: number, type: string) {
+    public constructor(x: number, y: number, type: TowerType) {
         this.x = x;
         this.y = y;
         this.type = type;
@@ -37,10 +38,12 @@ class AddTowerButton {
 
         this.layers.ui.add(this.button);
 
-        const tower = this.game.add.sprite(7, 8, "icon-tower-simple");
+        const props = getTowerProps(this.type);
+
+        const tower = this.game.add.sprite(7, 8, props.icon);
         const add = this.game.add.sprite(22, 22, "icon-add");
         const coin = this.game.add.sprite(5, 4, "icon-coin");
-        const cost = this.game.add.text(10, 1, `${TOWER_VALUE.SIMPLE}$`, style);
+        const cost = this.game.add.text(10, 1, `${props.value}$`, style);
 
         this.button.addChild(tower);
         this.button.addChild(add);
@@ -60,6 +63,6 @@ class AddTowerButton {
     }
 }
 
-export function createAddTowerButton(x = 20, y = 20, type = "simple"): AddTowerButton {
+export function createAddTowerButton(x: number, y: number, type: TowerType): AddTowerButton {
     return new AddTowerButton(x, y, type);
 }

@@ -85,7 +85,7 @@ export abstract class Tower {
         const current = this.connectionSprites.indexOf(connection);
 
         if (this.selectedConnection !== undefined && current !== this.selectedConnection) {
-            // TODO deselect current
+            // deselect current
             this.connectionSprites[this.selectedConnection].color = 0xFFFFFF;
             this.game.input.keyboard.removeKeyCapture(Keyboard.X);
         }

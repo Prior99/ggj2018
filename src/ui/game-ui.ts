@@ -7,6 +7,8 @@ import { Layers } from "../layers";
 import { Controller } from "../controller";
 import { Discovery } from "../actors/birds/discovery";
 
+import { TowerType } from "../utils/tower";
+
 @component
 export class UI implements Controller {
     @inject private game: Game;
@@ -25,8 +27,8 @@ export class UI implements Controller {
 
     @initialize
     public init(): void {
-        createAddTowerButton(20, 20, "simple");
-        createAddTowerButton(60, 20, "router");
+        createAddTowerButton(20, 20, TowerType.SIMPLE);
+        createAddTowerButton(60, 20, TowerType.ROUTER);
 
         this.game.input.keyboard.addKey(Keyboard.X).onDown.add(() => {
             if (this.focusedBird) {

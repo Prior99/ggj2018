@@ -14,6 +14,8 @@ import { SimpleTower } from "../actors/towers/simple-tower";
 import { Router } from "../actors/towers/router";
 import { Houses } from "./houses";
 
+import { TowerType, getTowerProps } from "../utils/tower";
+
 @component("Towers")
 export class Towers implements Controller {
     @inject private game: Game;
@@ -86,30 +88,30 @@ export class Towers implements Controller {
         this.towers.forEach(tower => tower.render());
     }
 
-    public spawnGhost(initialX: number, initialY: number, type = "simple", callback: () => void) {
+    public spawnGhost(initialX: number, initialY: number, type: TowerType, callback: () => void) {
         if (this.ghost) {
             this.ghost.destroy();
         }
 
-        let spriteName: string;
+        const props = getTowerProps(type);
         let spawnFn: (pos: Victor) => Tower;
-        let value: number;
 
         switch (type) {
-            case "simple":
-                spriteName = "tower";
+            case TowerType.SIMPLE:
                 spawnFn = (pos: Victor) => new SimpleTower(pos);
-                value = TOWER_VALUE.SIMPLE;
+                break;
+            case TowerType.ROUTER:
+                spawnFn = (pos: Victor) => new Router(pos);
                 break;
             default:
-                return;
+                throw new Error("Could not spawn Ghost");
         }
 
         this.ghost = new GhostTower(
             new Victor(initialX, initialY),
-            spriteName,
+            props.sprite,
             (x: number, y: number) => {
-                if (this.money.buy(value)) {
+                if (this.money.buy(props.value)) {
                     this.towers.push(spawnFn(new Victor(x, y)));
                     this.ghost = undefined;
 
