@@ -39,7 +39,6 @@ export class StateBoot extends State {
         this.addResource("grass", "grass", LoadType.ATLAS, 0.0017);
         this.addResource("weed", "weed", LoadType.ATLAS, 0.000511);
 
-        this.addResource("add-tower-button", "tower_add", LoadType.IMAGE, 0.000482);
         this.addResource("feather", "seagull-feather", LoadType.IMAGE, 0.000116);
 
         this.addResource("warning", "warning", LoadType.ATLAS, 0.000163);
